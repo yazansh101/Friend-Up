@@ -1,0 +1,13 @@
+name: movie_app
+packages:
+  - packages/*
+  - 'firebase_core: ^2.11.0'
+  - 'firebase_auth: ^4.5.0'
+  - 'google_sign_in: ^6.1.0'    
+  - 'cloud_firestore: ^4.6.0'
+  - 'firebase_storage: ^11.1.2'
+  - 'image_picker: ^0.8.7+4'
+  - 'uuid: ^3.0.7'
+  - 'geolocator: ^9.0.2'    
+  - 'firebase_messaging: ^14.5.0'
+  - 'plugin_platform_interface: ^2.1.4'
