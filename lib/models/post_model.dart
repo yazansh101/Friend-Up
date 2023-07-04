@@ -7,6 +7,7 @@ class Post {
   String ownerId;
   String mediaUrl;
   String ownerName;
+  String ownerProfileImage;
   DateTime timestamp;
   Map<String,dynamic> likes;
 
@@ -14,6 +15,7 @@ class Post {
     required this.id,
     required this.discription,
     required this.ownerId,
+    required this.ownerProfileImage,
     required this.mediaUrl,
     required this.ownerName,
     required this.timestamp,
@@ -30,6 +32,7 @@ class Post {
       likes: json['likes'],
       mediaUrl: json['mediaUrl'],
       timestamp: json['timestamp'].toDate(), 
+      ownerProfileImage:json['ownerProfileImage'],
 
     );
   }
@@ -45,6 +48,7 @@ class Post {
     data['mediaUrl'] = mediaUrl;
     data['timestamp'] = timestamp;
     data['ownerName'] = ownerName;
+    data['ownerProfileImage'] = ownerProfileImage;
 
 
     return data;

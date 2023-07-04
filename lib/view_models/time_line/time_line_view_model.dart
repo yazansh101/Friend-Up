@@ -18,14 +18,15 @@ class TimeLinePostsViewModel with ChangeNotifier {
     required String ownerName,
     required String postDescription,
     required File? imageFile,
+    required String? ownerProfileImage,
   }) async {
     _postProvider.createPost(
+        ownerProfileImage: ownerProfileImage,
         ownerName: ownerName,
         postDescription: postDescription,
         imageFile: imageFile);
-        notifyListeners();
+    notifyListeners();
   }
-
 
   initPosts() async {
     isWaittingPosts = true;

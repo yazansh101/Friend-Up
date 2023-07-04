@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:movie_app/core/helper/navigator_service.dart';
 import 'package:movie_app/view_models/time_line/time_line_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -103,7 +102,8 @@ class _CreatePostScreenState extends State<CreatePostScreen>
 
   SizedBox _buildPostButton(context) {
     final userViewModel = Provider.of<UserViewModel>(context, listen: false);
-    final timeLinePostsViewModel = Provider.of<TimeLinePostsViewModel>(context, listen: false);
+    final timeLinePostsViewModel =
+        Provider.of<TimeLinePostsViewModel>(context, listen: false);
 
     return SizedBox(
       width: double.infinity,
@@ -119,40 +119,20 @@ class _CreatePostScreenState extends State<CreatePostScreen>
                   height: 25);
             } else {
               await timeLinePostsViewModel.createPost(
+                  ownerProfileImage: userViewModel.currentUser.imageProfileUrl,
                   ownerName: userViewModel.currentUser.userName,
                   postDescription: _discription,
                   imageFile: mediaFile);
-              NavigatorService.pushFadeTransition(context, HomeScreen());
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HomeScreen(),
+                  ));
+              //  NavigatorService.pushFadeTransition(context, HomeScreen());
             }
           }
         },
         child: const Text("Post"),
-      ),
-    );
-  }
-
-  InkWell _buildVideosOption(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        ShowDialog.showMyDialog(context,
-            height: 15,
-            title: '',
-            discription: '',
-            choiceTrue: 'Gallery',
-            choiceFalse: 'Camera', onChoiceTrue: () async {
-          mediaFile = await ImagePickerHelper.pickVideoFromGallery();
-          setState(() {});
-        }, onChoiceFalse: () async {
-          mediaFile = await ImagePickerHelper.pickVideoFromCamera();
-          setState(() {});
-        });
-      },
-      child: Row(
-        children: [
-          const Icon(Icons.video_camera_front_rounded),
-          setHorizentalSpace(2),
-          CustomText(text: 'Videos'),
-        ],
       ),
     );
   }
@@ -214,8 +194,11 @@ class _CreatePostScreenState extends State<CreatePostScreen>
     final userViewModel = Provider.of<UserViewModel>(context, listen: false);
     return Row(
       children: [
-        const CircleAvatar(
-          backgroundColor: Colors.black,
+        CircleAvatar(
+          backgroundImage: NetworkImage(
+            userViewModel.currentUser.imageProfileUrl
+          ),
+          radius: 19,
         ),
         const SizedBox(width: 10),
         Column(

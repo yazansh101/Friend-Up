@@ -37,6 +37,7 @@ class ChatProvider {
     required String friendName,
     required String friendId,
     required String chatId,
+    required String ownerProfileImage,
   }) async {
     try {
       db.myFirebase
@@ -47,6 +48,7 @@ class ChatProvider {
           .set({
         'chatId': chatId,
         'userName': friendName,
+        'ownerProfileImage': ownerProfileImage,
       });
     } catch (e) {
       log('error when create a messages collection');

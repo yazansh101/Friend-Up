@@ -13,8 +13,9 @@ class CommentViewModel extends ChangeNotifier {
     yield* _db.fetchDataFromCollectionwithOrdering(path: 'comments/$postId/postComments', orderBy: 'timestamp',descending: true);
   }
 
-  Future setComment({postId,text,userId,userName})async{
+  Future setComment({postId,text,userId,userName,userProfileImage})async{
     Comment comment=Comment(
+      userProfileImage: userProfileImage,
       userName:userName ,
       text: text, userId: userId, timestamp: DateTime.now());
     _db.myFirebase.collection('comments').doc(postId).collection('postComments').add(comment.toJson());

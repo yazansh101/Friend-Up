@@ -21,6 +21,7 @@ class PostWidget extends StatelessWidget {
   final String postId;
   final String postOwnerId;
   final String? imageUrl;
+  final String? ownerProfileImage;
   final String? time;
   final String? userName;
   final void Function() onLike;
@@ -30,6 +31,7 @@ class PostWidget extends StatelessWidget {
     Key? key,
     required this.discription,
     required this.imageUrl,
+    required this.ownerProfileImage,
     required this.onLike,
     required this.onComment,
     this.time,
@@ -51,7 +53,7 @@ class PostWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-         _buildUserHeader(context,imageUrl),
+         _buildUserHeader(context,ownerProfileImage),
           setVerticalSpace(2),
          _buildMediaItem(),
           setVerticalSpace(2),

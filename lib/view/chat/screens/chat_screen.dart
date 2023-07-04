@@ -33,6 +33,7 @@ class ChatScreen extends StatelessWidget {
           children: [
             _buildMessages(chatId),
             SendMessagesBar(
+              ownerProfileImage:args['ownerProfileImage'],
               chatId: chatId,
               ownerId: args['ownerId'],
               userName: args['ownerName'],

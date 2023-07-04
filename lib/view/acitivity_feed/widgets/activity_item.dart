@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/constants/constants.dart';
 import '../../../core/constants/size_config.dart';
 import '../../../core/widgets/custom_text.dart';
 
@@ -11,19 +10,19 @@ class ActivityItem extends StatelessWidget {
     required this.activityType,
     required this.time,
     required this.userId,
-    required this.imageUrl,
+    required this.userImage,
   });
 
   final String userName;
   final String userId;
-  final String imageUrl;
+  final String userImage;
   final String activityType;
   final String time;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: _buildProfilePicture(),
+      leading: _buildProfilePicture(userImage),
       title: _buildActivityInfo(),
     );
   }
@@ -45,18 +44,10 @@ class ActivityItem extends StatelessWidget {
     );
   }
 
-  CircleAvatar _buildProfilePicture() {
+  CircleAvatar _buildProfilePicture(userImage) {
     return CircleAvatar(
-      backgroundColor: kPrimaryColor,
-      backgroundImage: imageUrl == '' ? null : NetworkImage(imageUrl),
+      backgroundImage: NetworkImage(userImage),
       radius: 19,
-      child: imageUrl == ''
-          ? const Icon(
-              size: 22,
-              Icons.person,
-              color: Colors.white70,
-            )
-          : null,
     );
   }
 }

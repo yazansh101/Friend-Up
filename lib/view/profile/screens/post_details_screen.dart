@@ -37,6 +37,7 @@ class PostDetailsScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 15.0),
       child: PostWidget(
+        ownerProfileImage: post.ownerProfileImage,
           postId: post.id,
           postOwnerId: post.ownerId,
           onComment: () {

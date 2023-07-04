@@ -55,9 +55,11 @@ Stream<QuerySnapshot<Map<String, dynamic>>> getNewMessage({required chatId}) asy
     required String friendId,
     required String chatId,
     required String message,
+    required String friendProfileImage,
   }) {
     if (value == null) {
       _chatProvider.createNewChat(
+        ownerProfileImage: friendProfileImage,
           currentUserId: currentUserId,
           friendName: friendName,
           friendId: friendId,

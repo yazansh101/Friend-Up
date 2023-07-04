@@ -19,6 +19,7 @@ class NavigatorService {
     );
   }
 
+
   static Future pushSlideTransition(
       BuildContext context, Widget destinationWidget) {
     return Navigator.push(

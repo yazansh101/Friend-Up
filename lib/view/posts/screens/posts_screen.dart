@@ -115,6 +115,7 @@ class _PostsScreenState extends State<PostsScreen> {
         );
       },
       child: PostWidget(
+        ownerProfileImage: posts[index].ownerProfileImage,
           postId: posts[index].id,
           postOwnerId: posts[index].ownerId,
           onComment: () {
@@ -135,7 +136,7 @@ class _PostsScreenState extends State<PostsScreen> {
                 userName: posts[index].ownerName,
                 mediaUrl: posts[index].mediaUrl,
                 postOwnerId: posts[index].ownerId,
-                userProfileImage: '',
+                userProfileImage: userViewModel.currentUser.imageProfileUrl,
               );
               log('liked succsesfully!');
             } catch (e) {
@@ -145,7 +146,9 @@ class _PostsScreenState extends State<PostsScreen> {
           time: posts[index].timestamp.toIso8601String(),
           userName: posts[index].ownerName,
           discription: posts[index].discription,
-          imageUrl: posts[index].mediaUrl),
+          imageUrl: posts[index].mediaUrl,
+
+          ),
     );
   }
 }

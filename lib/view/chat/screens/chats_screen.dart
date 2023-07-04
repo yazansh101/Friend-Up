@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -9,9 +8,9 @@ import 'package:movie_app/view/home/widgets/chat_card.dart';
 import 'package:movie_app/view_models/user/user_view_model.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/constants/size_config.dart';
 import '../../../core/helper/progress_indecator.dart';
 import '../../../core/helper/time_helper.dart';
-import '../../../core/constants/size_config.dart';
 import '../../../models/message_model.dart';
 import '../../../view_models/chat/chat_provider.dart';
 import '../../../view_models/chat/chat_view_model.dart';
@@ -53,10 +52,6 @@ class _ChatsScreenState extends State<ChatsScreen> {
           padding: const EdgeInsets.all(15),
           child: Column(
             children: [
-              // MySearchField(
-              //     title: 'Search for messages',
-              //     color: getSecondaryColorTheme(),
-              //     iconColor: getPrimaryColorTheme()),
               setVerticalSpace(3),
               listOfUsers(userViewModel.currentUser.userId.trim()),
             ],
@@ -72,8 +67,6 @@ class _ChatsScreenState extends State<ChatsScreen> {
         builder: (context, userSnapshot) {
           if (userSnapshot.connectionState == ConnectionState.waiting) {
             return LoadingIndicator.buildLoadingIndicator();
-            
-            // const CircularProgressIndicator();
           } else if (!userSnapshot.hasData) {
             return const Center(child: Text('there is no chats'));
           } else {
@@ -86,7 +79,8 @@ class _ChatsScreenState extends State<ChatsScreen> {
     return Expanded(
       child: ListView.separated(
           separatorBuilder: (context, index) => setVerticalSpace(1.5),
-          itemCount:userSnapshot.data == null ? 1 : userSnapshot.data!.docs.length,
+          itemCount:
+              userSnapshot.data == null ? 1 : userSnapshot.data!.docs.length,
           itemBuilder: (context, index) {
             ChatViewModel chatViewModel =
                 Provider.of<ChatViewModel>(context, listen: false);
@@ -106,7 +100,9 @@ class _ChatsScreenState extends State<ChatsScreen> {
                       'currentUserId': userViewModel.currentUser.userId,
                       'ownerName': userSnapshot.data!.docs[index]['userName'],
                       'ownerId': userSnapshot.data!.docs[index].id,
-                      //'ownerProfileImage': userSnapshot.data!.docs[index]['ownerProfileImage'] ?? ''
+                      'ownerProfileImage': userSnapshot.data!.docs[index]
+                              ['ownerProfileImage'] ??
+                          ''
                     };
                     NavigatorService.pushFadeTransition(
                       context,
@@ -130,8 +126,8 @@ class _ChatsScreenState extends State<ChatsScreen> {
                           int numOfMessagesNonRead =
                               listOfNonreadMessages.length;
                           return ChatCard(
-                            ownerImageUrl: '',
-                            // userSnapshot.data!.docs[index]['ownerProfileImage']??'',
+                            ownerImageUrl: userSnapshot.data!.docs[index]
+                                ['ownerProfileImage'],
                             numOfMessagesNonRead: numOfMessagesNonRead,
                             ownerId: userSnapshot.data!.docs[index].id,
                             lastMessage: messageSnapshot.data!.docs.isEmpty

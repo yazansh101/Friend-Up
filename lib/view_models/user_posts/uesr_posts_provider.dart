@@ -26,9 +26,9 @@ class PostSaver {
   Future<void> uploadPost(Post post) async {
     try {
       await postsRef.doc(post.id).set(post.toJson());
-      print('Successfully saved post!');
+      log('Successfully saved post!');
     } catch (e) {
-      print('Error saving post: $e');
+      log('Error saving post: $e');
     }
   }
 
@@ -114,12 +114,14 @@ class PostProvider {
     required String ownerName,
     required String postDescription,
     required File? imageFile,
+    required String? ownerProfileImage,
   }) async {
     final postId = const Uuid().v4();
     String postImageUrl = '';
     try {
       if (imageFile != null) {
         postImageUrl = await _imageUploader.uploadImage(imageFile, postId);
+      
       }
 
       final Post post = Post(
@@ -130,6 +132,7 @@ class PostProvider {
         likes: {},
         ownerId: userId,
         mediaUrl: postImageUrl,
+        ownerProfileImage: ownerProfileImage ?? ''
       );
       _postSaver.uploadPost(post);
     } catch (e) {

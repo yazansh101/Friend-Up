@@ -56,7 +56,7 @@ class ActivityFeedScreen extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(vertical: 3),
                 decoration: const BoxDecoration(),
                 child: ActivityItem(
-                  imageUrl: activityItems[index]['userProfileImage'],
+                  userImage: activityItems[index]['userProfileImage'],
                   userId: activityItems[index]['userId'],
                   userName:activityItems[index]['userName'] ,
                   time: TimeHelper.getLastSeen(activityItems[index]['timesmap']),

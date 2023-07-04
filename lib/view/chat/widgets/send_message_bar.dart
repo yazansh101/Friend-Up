@@ -9,6 +9,7 @@ import '../../../view_models/user/user_view_model.dart';
 
 class SendMessagesBar extends StatefulWidget {
   final String ownerId;
+  final String ownerProfileImage;
   final String userName;
   final String chatId;
 
@@ -17,6 +18,7 @@ class SendMessagesBar extends StatefulWidget {
     required this.ownerId,
     required this.userName,
     required this.chatId,
+    required this.ownerProfileImage,
   });
 
   @override
@@ -74,8 +76,8 @@ class _SendMessagesBarState extends State<SendMessagesBar> {
         InkWell(
           radius: 18,
           onTap: () async {
-            //  messageController.sendMessage(_message);
             chatProvider.sendMessage(null,
+            friendProfileImage: widget.ownerProfileImage ,
                 currentUserId: userProvider.currentUser.userId,
                 friendName: widget.userName,
                 friendId: widget.ownerId,
