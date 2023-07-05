@@ -70,7 +70,7 @@ class _CreatePostScreenState extends State<CreatePostScreen>
                     const SizedBox(height: 16.0),
                     if (mediaFile != null) _buildMediaPreview(),
                     setVerticalSpace(2),
-                    _buildPhotosOption(context),
+                    _buildPhotoOption(context),
                     setVerticalSpace(1),
                     const Spacer(),
                     _buildPostButton(context),
@@ -128,7 +128,6 @@ class _CreatePostScreenState extends State<CreatePostScreen>
                   MaterialPageRoute(
                     builder: (context) => const HomeScreen(),
                   ));
-              //  NavigatorService.pushFadeTransition(context, HomeScreen());
             }
           }
         },
@@ -137,7 +136,7 @@ class _CreatePostScreenState extends State<CreatePostScreen>
     );
   }
 
-  InkWell _buildPhotosOption(BuildContext context) {
+  InkWell _buildPhotoOption(BuildContext context) {
     return InkWell(
       onTap: () {
         ShowDialog.showMyDialog(
@@ -155,6 +154,7 @@ class _CreatePostScreenState extends State<CreatePostScreen>
             mediaFile = await ImagePickerHelper.pickImageFromCamera();
             setState(() {});
           },
+          height: 5
         );
       },
       child: Row(
@@ -190,7 +190,7 @@ class _CreatePostScreenState extends State<CreatePostScreen>
     );
   }
 
-  Row _buildUserDetails(BuildContext context) {
+Row _buildUserDetails(BuildContext context) {
     final userViewModel = Provider.of<UserViewModel>(context, listen: false);
     return Row(
       children: [

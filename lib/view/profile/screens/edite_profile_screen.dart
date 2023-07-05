@@ -1,9 +1,14 @@
 // ignore_for_file: unnecessary_null_comparison, use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:movie_app/core/constants/constants.dart';
 import 'package:movie_app/core/constants/size_config.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/helper/image_picker.dart';
 import '../../../core/widgets/custom_text.dart';
 import '../../../core/widgets/show_dialog.dart';
 import '../../../models/user_model.dart';
@@ -19,64 +24,12 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   TextEditingController? _bioController;
   TextEditingController? _userNameController;
-  // File _image;
   final _formKey = GlobalKey<FormState>();
+  File? mediaFile;
   User? user;
   String? _bio;
   String? _username;
   bool _isDirty = false;
-
-  Future<void> _loadData() async {
-    // try {
-    //   User user = await userController.getUserInfo(user.userId) as User;
-
-    //   _bio = user.bio;
-    //   _username = user.userName;
-    //   _bioController = TextEditingController(text: _bio);
-    //   _userNameController = TextEditingController(text: _username);
-    //   setState(() {});
-    //   print('init succesfully!');
-    // } catch (e) {
-    //   print(e);
-    // }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _loadData();
-  }
-  // method to select profile image from camera or gallery
-  // Future _getImage() async {
-  //   final pickedFile =
-  //       await ImagePicker().getImage(source: ImageSource.gallery);
-  //   setState(() {
-  //     _image = File(pickedFile.path);
-  //   });
-  // }
-  // method to update user's profile information
-  // Future<void> _updateProfile() async {
-  // upload image to Firebase Storage
-  //   String imageUrl = '';
-  // if (_image != null) {
-  //   final ref = FirebaseStorage.instance
-  //       .ref()
-  //       .child('user_images')
-  //       .child(DateTime.now().toString() + '.jpg');
-  //  // await ref.putFile(_image);
-  //   imageUrl = await ref.getDownloadURL();
-  // }
-  //   // get user's current location
-  //   final position = await Geolocator.getCurrentPosition();
-  //   final placemarks = await Geolocator.placemarkFromCoordinates(
-  //       position.latitude, position.longitude);
-  //   final address = '${placemarks[0].locality}, ${placemarks[0].country}';
-  //   // save user information to Firebase Firestore
-  //   // replace this section with your own code to save user information
-  //   // to your specific database
-  //   print('Profile Image URL: $imageUrl');
-  //   print(address);
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +52,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               setVerticalSpace(8),
-              _buildProfileImage(),
+              _buildProfileImage(userViewModel.currentUser.imageProfileUrl),
               const SizedBox(height: 20),
               _buildUserName(),
               const SizedBox(height: 10),
@@ -123,10 +76,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       onPressed: () async {
         await userViewModel.updateProfile(
           bio: _bio ?? userViewModel.currentUser.bio,
-          image: null,
+          image: mediaFile,
           userId: userViewModel.currentUser.userId,
           userName: _username ?? userViewModel.currentUser.userName,
         );
+        
         Navigator.pop(context);
       },
       child: const Text('Save Changes'),
@@ -192,20 +146,67 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  Center _buildProfileImage() {
+  Center _buildProfileImage(imageUrl) {
     return Center(
-      child: GestureDetector(
-        onTap: () {},
-        //_getImage,
-        child: const CircleAvatar(
-          backgroundColor: Colors.grey,
-          // backgroundImage: _image != null
-          //     ? FileImage(_image)
-          //     : NetworkImage(
-          //         'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png'),
-          radius: 60,
-          child: Icon(Icons.person),
-        ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          CircleAvatar(
+              backgroundImage: 
+              mediaFile == null
+                  ? imageUrl == null
+                      ? null
+                      : NetworkImage(imageUrl)
+                  : FileImage(mediaFile!)as ImageProvider<Object>?,
+              radius: 60,
+              child: mediaFile == null
+                  ? imageUrl == null
+                      ? const Icon(
+                          Icons.person,
+                          size: 30,
+                        )
+                      : null
+                  : null),
+          Positioned(
+            bottom: 0,
+            right: -18,
+            child: SizedBox(
+              height: 42,
+              width: 58,
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.white),
+                  elevation: MaterialStateProperty.all<double>(0),
+                  shape: MaterialStateProperty.all(const CircleBorder()),
+                ),
+                onPressed: () {
+                  ShowDialog.showMyDialog(
+                    context,
+                    icon: FontAwesomeIcons.image,
+                    title: '',
+                    discription: '',
+                    choiceTrue: 'Gallery',
+                    choiceFalse: 'Camera',
+                    onChoiceTrue: () async {
+                      mediaFile =
+                          await ImagePickerHelper.pickImageFromGallery();
+                      setState(() {});
+                    },
+                    onChoiceFalse: () async {
+                      mediaFile = await ImagePickerHelper.pickImageFromCamera();
+                      setState(() {});
+                    },
+                  );
+                },
+                child: const Icon(
+                  Icons.camera_alt_outlined,
+                  color: kPrimaryColor,
+                ),
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -240,6 +241,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           const CustomText(
             text: 'Edite Profile',
             fontSize: 15,
+            color: Colors.white,
           ),
         ],
       ),

@@ -9,7 +9,7 @@ class LoadingIndicator {
       Color color = kPrimaryColor,
       String type = 'Wave'}) {
     return Center(
-      child: SpinKitWave(
+      child: SpinKitChasingDots (
         size: size,
         color: color,
       ),

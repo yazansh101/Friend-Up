@@ -8,6 +8,7 @@ import 'package:movie_app/core/widgets/custom_text_bottun.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/constants/size_config.dart';
+import '../../../core/helper/progress_indecator.dart';
 import '../../../core/utils/routes.dart';
 import '../../../models/user_model.dart';
 import '../../../view_models/auth/auth_view_model.dart';
@@ -44,6 +45,12 @@ class ProfileScreen extends StatelessWidget {
 
   var boxDecoration = BoxDecoration(
       color: getColorTheme(),
+      boxShadow: const [
+        BoxShadow(
+          blurRadius: 5,
+          color: Colors.grey
+        ),
+      ],
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(25),
         topRight: Radius.circular(25),
@@ -67,7 +74,7 @@ class ProfileScreen extends StatelessWidget {
         future: fetchUserData(context),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return LinearProgressIndicator();
+            return LoadingIndicator.buildLoadingIndicator();
           } else if (snapshot.hasError) {
             return Center(child: CustomText(text: 'There is an error :( ${snapshot.error} '));
           } else {
@@ -212,7 +219,7 @@ class ProfileScreen extends StatelessWidget {
       onPressed: () {
         Navigator.pushNamed(context, Routes.editeProfile);
       },
-      width: setWidth(28),
+      width: setWidth(30),
       height: setHeight(4),
     );
   }

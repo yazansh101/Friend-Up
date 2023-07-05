@@ -19,8 +19,8 @@ class UserProvider with ChangeNotifier {
 
   get currentUserId => _auth.currentUser!.uid;
 
-   User? _currentUser;
-   User get currentUser => _currentUser!;
+  User? _currentUser;
+  User get currentUser => _currentUser!;
 
   Future<void> initcurrentUserData() async {
     try {
@@ -93,20 +93,28 @@ class UserProvider with ChangeNotifier {
           .child('user_image')
           .child('$userId.jpg');
 
-      await ref.putFile(image);
-      final url = await ref.getDownloadURL();
-
-      await usersRef.doc(userId).update({
+      try {
+        await ref.putFile(image);
+        final url = await ref.getDownloadURL();
+        log(url);
+          await usersRef.doc(userId).update({
         'username': userName,
         'bio': bio,
-        'image_url': url,
-      });
+        'imageUrl': url,
+      }
+      
+      );
+        log('Uploaded succesfull ');
+
+      } catch (e) {
+        log('The error when update profile is $e');
+      }
     } else {
       await usersRef.doc(userId).update({
         'username': userName,
         'bio': bio,
       });
-      print('only username & bio updated Successfuly!');
+      log('only username & bio updated Successfuly!');
     }
   }
 }
