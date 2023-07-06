@@ -1,16 +1,15 @@
-# movie_app
+# Friend-UP
 
-A new Flutter project.
+A social media app using Flutter with a Firebase backend..
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- user following/unfollowing, 
+- post creation, 
+- real-time activity feed notifications.
+- Realtime Messaging
+- Utilized Firebase authentication, storage, and cloud functions for secure user authentication, media storage, and server-side       functionality.
+- Incorporated user search functionality to easily discover and connect with other users on the platform.
+- Employed the Provider package and followed the MVVM pattern to ensure a modular and scalable codebase.
+- implementing pagination to enhance the user experience by loading posts in chunks.
+- Dark Mode Support
