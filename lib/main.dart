@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:movie_app/core/helper/shared_preferences.dart';
 import 'package:movie_app/core/utils/theme.dart';
 import 'package:movie_app/view_models/activity_feed/activity_feed_view_model.dart';
@@ -31,14 +32,7 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    // SystemUiOverlay.top;
-    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky, overlays: [  SystemUiOverlay.top]);
-    // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    //     statusBarColor: kPrimaryColor,
-    //     statusBarIconBrightness: Brightness.light,
-    //     statusBarBrightness: Brightness.light,
-    //     systemNavigationBarColor: kPrimaryColor));
-
+     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky, overlays: []);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(

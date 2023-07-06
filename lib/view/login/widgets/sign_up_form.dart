@@ -98,8 +98,8 @@ class _SignUpFormState extends State<SignUpForm> {
           }
         },
         text: "Register",
-        textColor: Colors.grey.shade300,
-        color: Colors.white38,
+        textColor: kPrimaryColor,
+        color: Colors.white,
         width: setWidth(32),
         height: setHeight(5),
       ),

@@ -56,7 +56,7 @@ class ProfilePictuerOnline extends StatelessWidget {
   CircleAvatar _buildProfilePicture() {
     return CircleAvatar(
       backgroundColor: kPrimaryColor,
-      backgroundImage: imageUrl == '' ? null : NetworkImage(imageUrl!),
+      backgroundImage: imageUrl == '' || imageUrl==null? null : NetworkImage(imageUrl!),
       radius: radius1,
       child: imageUrl == ''
           ? const Icon(

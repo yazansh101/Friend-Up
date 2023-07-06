@@ -1,6 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 // ignore_for_file: prefer_const_constructors
 
+
+
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:movie_app/core/constants/constants.dart';
 import 'package:movie_app/core/widgets/custom_text.dart';
@@ -30,26 +34,25 @@ class ProfileScreen extends StatelessWidget {
   }) : super(key: key);
 
   fetchUserData(BuildContext context) async {
-    final followersViewModel =
-        Provider.of<FollowersViewModel>(context, listen: false);
-    final UserPostsViewModel userPostViewModel =UserPostsViewModel.provider(context);
-       
+    final followersViewModel = FollowersViewModel.provider(context);
+    final userPostViewModel = UserPostsViewModel.provider(context);
+    final userViewModel = UserViewModel.provider(context);
+
     await followersViewModel.getUserData(userId);
     await userPostViewModel.getUserPosts(userId);
+    await userViewModel.getUserData(userId);
   }
 
   @override
   Widget build(BuildContext context) {
+    log(userId);
     return Scaffold(appBar: _buildAppBar(context), body: _buildBody(context));
   }
 
   var boxDecoration = BoxDecoration(
       color: getColorTheme(),
       boxShadow: const [
-        BoxShadow(
-          blurRadius: 5,
-          color: Colors.grey
-        ),
+        BoxShadow(blurRadius: 5, color: Colors.grey),
       ],
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(25),
@@ -60,11 +63,11 @@ class ProfileScreen extends StatelessWidget {
   );
 
   Container _buildBody(context) {
-    final followersViewModel =
-        Provider.of<FollowersViewModel>(context, listen: false);
-    final userPostViewModel = Provider.of<UserPostsViewModel>(context);
-    final userViewModel = Provider.of<UserViewModel>(context, listen: false);
-    final User currentUser = userViewModel.currentUser;
+    final followersViewModel = FollowersViewModel.provider(context);
+    final userPostViewModel =
+        UserPostsViewModel.provider(context, listen: true);
+    final userViewModel = UserViewModel.provider(context);
+
 
     return Container(
       decoration: boxDecoration,
@@ -76,18 +79,21 @@ class ProfileScreen extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return LoadingIndicator.buildLoadingIndicator();
           } else if (snapshot.hasError) {
-            return Center(child: CustomText(text: 'There is an error :( ${snapshot.error} '));
+            return Center(
+                child: CustomText(
+                    text: 'There is an error :( ${snapshot.error} '));
           } else {
             return Column(
+              key: ValueKey(userId),
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 setVerticalSpace(2),
-                _buildProfileImage(currentUser.imageProfileUrl, userId),
-                setVerticalSpace(1),
-                _buildBio(currentUser),
-                setVerticalSpace(1),
-                _buildButtonOptions(currentUser, snapshot, context),
-                setVerticalSpace(4),
+                _buildProfileImage(userViewModel.user.imageProfileUrl, userId),
+                setVerticalSpace(2),
+                _buildBio(userViewModel.user),
+                setVerticalSpace(2),
+                _buildButtonOptions(userViewModel.currentUser, snapshot, context),
+                setVerticalSpace(3),
                 _buildUserInfo(followersViewModel, userPostViewModel),
                 setVerticalSpace(4),
                 UserPosts(),
@@ -111,9 +117,9 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBio(currentUser) {
+  Widget _buildBio(user) {
     return CustomText(
-      text: currentUser.bio,
+      text: user.bio,
       fontSize: 13,
     );
   }
@@ -144,9 +150,8 @@ class ProfileScreen extends StatelessWidget {
       actions: [
         IconButton(
             onPressed: () {
-           authViewModel.signOut();
-           Navigator.pushReplacementNamed(context, Routes.login);
-           
+              authViewModel.signOut();
+              Navigator.pushReplacementNamed(context, Routes.login);
             },
             icon: Icon(Icons.logout_outlined))
       ],
@@ -156,6 +161,8 @@ class ProfileScreen extends StatelessWidget {
   Widget _buildButtonOptions(
       User currentUser, AsyncSnapshot snapshot, context) {
     final isMe = currentUser.userId == userId;
+    log(userId);
+    log(currentUser.userId);
     if (isMe) {
       return _buildEditeOption(context);
     } else {

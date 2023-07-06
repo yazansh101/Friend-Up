@@ -5,42 +5,45 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:movie_app/view_models/user/user_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/user_model.dart';
 
 class UserViewModel with ChangeNotifier {
   final UserProvider _userProvider;
   bool isFetchingUserData = false;
-  
+
   UserViewModel(this._userProvider);
 
-    // static provider(context, {listen = false}) =>
-    //   Provider.of<UserViewModel>(context, listen: listen);
- 
+  static provider(context, {listen = false}) =>
+      Provider.of<UserViewModel>(context, listen: listen);
+
   bool? isOnline = false;
- 
+  User? user;
 
   Stream? stream;
   bool get isMe => currentUser.userId != _userProvider.currentUserId;
 
-
-User get currentUser => _userProvider.currentUser;
+  User get currentUser => _userProvider.currentUser;
 
   Future<void> initcurrentUserData() async {
     toggleisFetching();
     await _userProvider.initcurrentUserData();
     toggleisFetching();
   }
-  
-    toggleisFetching(){
-    isFetchingUserData=!isFetchingUserData;
+
+  toggleisFetching() {
+    isFetchingUserData = !isFetchingUserData;
     notifyListeners();
   }
 
-  Future<User> getUserData(userId) async {
-    final doc = await _userProvider.getUserInfo(userId);
-    final user = User.fromJson(doc);
-    return user;
+  Future<void> getUserData(userId) async {
+    try {
+      final doc = await _userProvider.getUserInfo(userId);
+      user = User.fromJson(doc);
+      } catch (e) {
+      log('the error when get user data is :$e');
+    }
   }
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> getUserStatus(userId) async* {

@@ -2,13 +2,15 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:movie_app/view_models/followers/followers_controller.dart';
+import 'package:provider/provider.dart';
 
 class FollowersViewModel with ChangeNotifier {
   final FollowersProvider _followersProvider;
   
   FollowersViewModel(this._followersProvider) ;
 
- 
+ static provider(context, {listen = false}) =>
+      Provider.of<FollowersViewModel>(context, listen: listen);
 
   List? get myFollowers => _followersProvider.myFollowers ?? [];
   List? get myFollowing => _followersProvider.myFollowing ?? [];

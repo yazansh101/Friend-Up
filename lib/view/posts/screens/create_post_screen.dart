@@ -154,7 +154,7 @@ class _CreatePostScreenState extends State<CreatePostScreen>
             mediaFile = await ImagePickerHelper.pickImageFromCamera();
             setState(() {});
           },
-          height: 5
+          
         );
       },
       child: Row(

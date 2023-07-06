@@ -30,7 +30,7 @@ class ShowDialog {
               children: [
                 Container(
                   padding: const EdgeInsets.all(10),
-                  height: setHeight(height ?? 26),
+                  height: height??100,
                   decoration: BoxDecoration(
                     color: kPrimaryColor.withOpacity(0.8),
                     borderRadius: BorderRadius.circular(20.0),
@@ -39,22 +39,22 @@ class ShowDialog {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      setVerticalSpace(3),
-                      CustomText(
+                       if(title!='')  setVerticalSpace(3),
+                     if(title!='')  CustomText(
                         text: title,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
-                      setVerticalSpace(3),
-                      CustomText(
+                     if(discription!='')  setVerticalSpace(3),
+                      if(discription!='') CustomText(
                         text: discription,
                         fontSize: 16,
                         alignment: Alignment.center,
                         fontWeight: FontWeight.bold,
                         color: Colors.white70,
                       ),
-                      const Spacer(
+                     if(discription!='')  const Spacer(
                         flex: 1,
                       ),
         
@@ -85,14 +85,13 @@ class ShowDialog {
                                 fontSize: 12,
                               ),
                               onPressed: () {
-                                // Perform saving action here
                                 Navigator.pop(context, false);
                               },
                             ),
                           if (choiceFalse != null) const Spacer(),
                         ],
                       ),
-                      const Spacer(),
+                      if(discription!='') const Spacer(),
                     ],
                   ),
                 ),
@@ -119,7 +118,6 @@ class ShowDialog {
         );
       },
     ).then((value) {
-      // Handle result of user's action
       if (value) {
         onChoiceTrue!();
       } else {

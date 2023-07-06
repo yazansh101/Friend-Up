@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 
+import '../../../core/constants/constants.dart';
 import 'info_Item.dart';
 
 class ProfileInfo extends StatelessWidget {
@@ -21,8 +22,14 @@ class ProfileInfo extends StatelessWidget {
     
     var boxDecoration = BoxDecoration(
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: Colors.black),
+      border: Border.all(color: kPrimaryColor),
       color: Colors.grey,
+      boxShadow: const [
+        BoxShadow(
+          color: kPrimaryColor,
+          blurRadius: 1
+        )
+      ]
     );
    
     return Container(

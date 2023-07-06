@@ -51,11 +51,10 @@ class _HomeScreenState extends State with WidgetsBindingObserver {
   // }
 
   initAppData() async {
-        await Provider.of<UserViewModel>(context, listen: false)
+    await Provider.of<UserViewModel>(context, listen: false)
         .initcurrentUserData();
     await Provider.of<TimeLinePostsViewModel>(context, listen: false)
         .initPosts();
-
   }
 
   @override
@@ -65,7 +64,7 @@ class _HomeScreenState extends State with WidgetsBindingObserver {
       onTap: closeKeyboard,
       child: Consumer<UserViewModel>(
         builder: (context, userViewModel, child) => Scaffold(
-         appBar: _buildAppBar(_currentIndex, context),
+          //appBar: _buildAppBar(_currentIndex, context),
           body: userViewModel.isFetchingUserData
               ? LoadingIndicator.buildLoadingIndicator()
               : _buildBody(),
@@ -137,28 +136,27 @@ class _HomeScreenState extends State with WidgetsBindingObserver {
                 ),
               ),
               const Spacer(),
-            Container(
-                      margin: const EdgeInsets.only(left: 22),
-                      child: GestureDetector(
-                        onTap: () {
-                          NavigatorService.pushFadeTransition(
-                            context,
-                            ProfileScreen(
-                              userId: userViewMOdel.currentUser.userId,
-                              userName: userViewMOdel.currentUser.userName,
-                              key: ValueKey(userViewMOdel.currentUser.userId),
-                            ),
-                          );
-                        },
-                        child: CircleAvatar(
-                          backgroundImage: NetworkImage(
-                            userViewMOdel.currentUser.imageProfileUrl,
-                          ),
-                          radius: 19,
-                        ),
+              Container(
+                margin: const EdgeInsets.only(left: 22),
+                child: GestureDetector(
+                  onTap: () {
+                    NavigatorService.pushFadeTransition(
+                      context,
+                      ProfileScreen(
+                        userId: userViewMOdel.currentUser.userId,
+                        userName: userViewMOdel.currentUser.userName,
+                        key: ValueKey(userViewMOdel.currentUser.userId),
                       ),
-                    )
-        
+                    );
+                  },
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage(
+                      userViewMOdel.currentUser.imageProfileUrl,
+                    ),
+                    radius: 19,
+                  ),
+                ),
+              )
             ],
           ),
         ),
