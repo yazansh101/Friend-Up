@@ -74,7 +74,7 @@ class PostRetriever {
         .collection('posts')
         .orderBy('timestamp', descending: true)
         .startAfterDocument(lastDocument)
-        .limit(5)
+        .limit(2)
         .get();
     if (nextQuerySnapshot.docs.isNotEmpty) {
       lastDocument = nextQuerySnapshot.docs[nextQuerySnapshot.docs.length - 1];

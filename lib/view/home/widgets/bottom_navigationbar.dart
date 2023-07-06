@@ -102,7 +102,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
                 context, Routes.createPost);
           },
           child: const CircleAvatar(
-            radius: 29,
+            radius: 32,
             backgroundColor: kPrimaryColor,
             child: Icon(
               Icons.add,

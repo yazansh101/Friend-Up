@@ -64,8 +64,7 @@ class ProfileScreen extends StatelessWidget {
 
   Container _buildBody(context) {
     final followersViewModel = FollowersViewModel.provider(context);
-    final userPostViewModel =
-        UserPostsViewModel.provider(context, listen: true);
+    final userPostViewModel = UserPostsViewModel.provider(context, listen: true);
     final userViewModel = UserViewModel.provider(context);
 
 

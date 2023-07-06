@@ -76,8 +76,6 @@ class PostWidget extends StatelessWidget {
   }
 
   GestureDetector _buildUserHeader(BuildContext context,imageUrl) {
-    final userViewModel = Provider.of<UserViewModel>(context, listen: false);
-
     return GestureDetector(
         onTap: () {
           NavigatorService.pushFadeTransition(context, ProfileScreen(userId: postOwnerId,userName:userName! ,key: ValueKey(postOwnerId)),
@@ -91,7 +89,6 @@ class PostWidget extends StatelessWidget {
           child: Material(
             type: MaterialType.transparency,
             child: 
-            
             UserHeader(
               imageUrl:imageUrl,
               postOwnerId: postOwnerId,

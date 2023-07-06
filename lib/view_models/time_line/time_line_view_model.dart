@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/post_model.dart';
 import '../user_posts/uesr_posts_provider.dart';
@@ -9,7 +10,8 @@ import '../user_posts/uesr_posts_provider.dart';
 class TimeLinePostsViewModel with ChangeNotifier {
   final PostProvider _postProvider;
   TimeLinePostsViewModel(this._postProvider);
-
+  static provider(context, {listen = false}) =>
+      Provider.of<TimeLinePostsViewModel>(context, listen: listen);
   List<Post>? _timeLinePosts = [];
   List<Post>? get timeLinePosts => _timeLinePosts;
   bool isWaittingPosts = false;

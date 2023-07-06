@@ -11,7 +11,6 @@ import 'package:movie_app/view/profile/screens/post_details_screen.dart';
 import 'package:movie_app/view_models/activity_feed/activity_feed_view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/constants/size_config.dart';
 import '../../../models/post_model.dart';
 import '../../../view_models/time_line/time_line_view_model.dart';
 import '../../../view_models/user/user_view_model.dart';
@@ -37,13 +36,14 @@ class _PostsScreenState extends State<PostsScreen> {
   initAppData() async {
     await Provider.of<TimeLinePostsViewModel>(context, listen: false)
         .initPosts();
+        log('new post added');
   }
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig.init(context);
-    final timeLinePostsViewModel =
-        Provider.of<TimeLinePostsViewModel>(context, listen: true);
+
+    final timeLinePostsViewModel = TimeLinePostsViewModel.provider(context,listen: true);
+    
     return Consumer<UserViewModel>(
         builder: (context, userViewModel, child) => _buildPostsScreenBody(
             context, timeLinePostsViewModel, userViewModel));
@@ -55,8 +55,10 @@ class _PostsScreenState extends State<PostsScreen> {
       UserViewModel userViewModel) {
     return RefreshIndicator(
       onRefresh: () async {
-        //    return await Provider.of<TimeLinePostsViewModel>(context, listen: false)
-        //    .initPosts();
+          setState(()async {
+            await Provider.of<TimeLinePostsViewModel>(context, listen: false)
+        .initPosts();
+          });
       },
       child: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20, top: 20),

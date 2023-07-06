@@ -123,7 +123,8 @@ class _CreatePostScreenState extends State<CreatePostScreen>
                   ownerName: userViewModel.currentUser.userName,
                   postDescription: _discription,
                   imageFile: mediaFile);
-              Navigator.pushReplacement(
+                  
+              Navigator.pop(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const HomeScreen(),
