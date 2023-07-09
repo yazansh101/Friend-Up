@@ -26,7 +26,7 @@ class UserViewModel with ChangeNotifier {
 
   User get currentUser => _userProvider.currentUser;
 
-  Future<void> initcurrentUserData() async {
+  Future<void> initCurrentUserData() async {
     toggleisFetching();
     await _userProvider.initcurrentUserData();
     toggleisFetching();

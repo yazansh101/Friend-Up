@@ -4,29 +4,29 @@ import 'package:movie_app/view_models/chat/chat_provider.dart';
 
 import '../../models/message_model.dart';
 
-class ChatViewModel with ChangeNotifier{
+class ChatViewModel with ChangeNotifier {
   final ChatProvider _chatProvider;
   ChatViewModel(this._chatProvider);
 
   List<Message>? _messages;
- List<Message> get messages => _messages ?? [];
-
+  List<Message> get messages => _messages ?? [];
 
   Future<void> getMessages(String chatId) async {
     final snapshot = await _chatProvider.getNewMessage(chatId).single;
-    _messages = snapshot.docs.map((doc) => Message.fromJson(doc.data())).toList();
+    _messages =
+        snapshot.docs.map((doc) => Message.fromJson(doc.data())).toList();
     notifyListeners();
   }
 
-
-  
-Stream getListOfMessages(String chatId) async* {
-  await for (QuerySnapshot<Map<String, dynamic>> snapshot in _chatProvider.getNewMessage(chatId)) {
-    List<Message> messages = snapshot.docs.map((doc) => Message.fromJson(doc.data())).toList();
-    yield messages;
-    notifyListeners();
+  Stream getListOfMessages(String chatId) async* {
+    await for (QuerySnapshot<Map<String, dynamic>> snapshot
+        in _chatProvider.getNewMessage(chatId)) {
+      List<Message> messages =
+          snapshot.docs.map((doc) => Message.fromJson(doc.data())).toList();
+      yield messages;
+      notifyListeners();
+    }
   }
-}
 //   Stream<List<Message>> getNonReadMessages(String chatId) async* {
 //   QuerySnapshot<Map<String, dynamic>> snapshot = await _chatProvider.getNewMessage(chatId).single;
 //   List<Message> messageList = snapshot.docs.map((doc) => Message.fromJson(doc.data())).toList();
@@ -39,37 +39,36 @@ Stream getListOfMessages(String chatId) async* {
 // }
 
 //////////////////////////////////////////////////////////////////////
-  Stream<QuerySnapshot<Object?>> getNewChat({required currentUserId})async* {
-  final snapshot= _chatProvider.getNewChat(currentUserId);
- // _chats = snapshot.map((doc) => Chat.fromJson(doc.data()));
+  Stream<QuerySnapshot<Object?>> getNewChat({required currentUserId}) async* {
+    final snapshot = _chatProvider.getNewChat(currentUserId);
+    // _chats = snapshot.map((doc) => Chat.fromJson(doc.data()));
   }
 
-Stream<QuerySnapshot<Map<String, dynamic>>> getNewMessage({required chatId}) async*{
-   yield* _chatProvider.getNewMessage(chatId);
+  Stream<QuerySnapshot<Map<String, dynamic>>> getNewMessage(
+      {required chatId}) async* {
+    yield* _chatProvider.getNewMessage(chatId);
   }
 
-  sendMessage(
-    value, {
+  sendMessage({
     required String currentUserId,
+    required String currentUserName,
     required String friendName,
     required String friendId,
     required String chatId,
     required String message,
     required String friendProfileImage,
-  }) {
-    if (value == null) {
-      _chatProvider.createNewChat(
-        ownerProfileImage: friendProfileImage,
-          currentUserId: currentUserId,
-          friendName: friendName,
-          friendId: friendId,
-          chatId: chatId);
-      _chatProvider.sendNewMessage(
-          chatId: chatId, message: message, currentUserId: currentUserId);
-    } else {
-      _chatProvider.sendNewMessage(
-          chatId: chatId, message: message, currentUserId: currentUserId);
-    }
-  }
+    required String currentUserImage,
 
+  }) {
+    _chatProvider.createNewChat(
+      currentUserImage: currentUserImage,
+        currentUserName: currentUserName,
+        ownerProfileImage: friendProfileImage,
+        currentUserId: currentUserId,
+        friendName: friendName,
+        friendId: friendId,
+        chatId: chatId);
+    _chatProvider.sendNewMessage(
+        chatId: chatId, message: message, currentUserId: currentUserId);
+  }
 }

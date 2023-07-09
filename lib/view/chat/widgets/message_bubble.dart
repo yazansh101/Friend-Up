@@ -7,27 +7,38 @@ import '../../../core/widgets/custom_text.dart';
 class MessageBubble extends StatelessWidget {
   const MessageBubble({
     super.key,
-    required this.backgroundColor,
-    required this.borderRadius,
+
     required this.messageContent,
     required this.time,
     this.isSent = true,
     this.isDelivered = false,
     required this.isLastMessage,
+    required this.isMe,
   });
 
-  final Color backgroundColor;
-  final BorderRadius borderRadius;
+
   final String messageContent;
   final String time;
   final bool isSent;
   final bool isDelivered;
   final bool isLastMessage;
+  final bool isMe;
 
   @override
   Widget build(BuildContext context) {
     // final backgroundColor = isSent ? Colors.blue : Colors.grey.shade200;
     // final iconColor = isSent ? Colors.white : Colors.black;
+    final borderRadius = BorderRadius.only(
+      bottomLeft: const Radius.circular(15),
+      topLeft: isMe ? const Radius.circular(15) : const Radius.circular(0),
+      bottomRight: isMe ? const Radius.circular(0) : const Radius.circular(15),
+      topRight: const Radius.circular(15),
+      
+    );
+      final backgroundColor = isMe
+      ?  kPrimaryLightColor
+      : kPrimaryColor;
+      
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -51,7 +62,7 @@ class MessageBubble extends StatelessWidget {
                     Flexible(
                       child: CustomText(
                         text: messageContent,
-                        color: textColor,
+                        color: isMe?textColor :Colors.white,
                         alignment: Alignment.centerLeft,
                         fontSize: 15,
                       ),
@@ -72,7 +83,7 @@ class MessageBubble extends StatelessWidget {
                 ),
                 setHorizentalSpace(1),
                 if (isSent && isDelivered)
-                const Icon(Icons.done_all, size: 16, color: Colors.blue),
+                  const Icon(Icons.done_all, size: 16, color: Colors.blue),
               ],
             ),
         ],

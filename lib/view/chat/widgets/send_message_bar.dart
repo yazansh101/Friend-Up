@@ -76,7 +76,9 @@ class _SendMessagesBarState extends State<SendMessagesBar> {
         InkWell(
           radius: 18,
           onTap: () async {
-            chatProvider.sendMessage(null,
+            chatProvider.sendMessage(
+              currentUserImage: userProvider.currentUser.imageProfileUrl,
+              currentUserName: userProvider.currentUser.userName,
             friendProfileImage: widget.ownerProfileImage ,
                 currentUserId: userProvider.currentUser.userId,
                 friendName: widget.userName,

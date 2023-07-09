@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/core/constants/size_config.dart';
-import 'package:movie_app/core/widgets/custom_text.dart';
 
 class MediaItem extends StatelessWidget {
   final String? mediaUrl;
@@ -22,16 +21,13 @@ class MediaItem extends StatelessWidget {
             topRight: Radius.circular(20),
           ),
           border: Border.all(width: 1, color: getColorTheme())),
-      child: mediaUrl == ""
-          ? Container(
-              color: Colors.grey,
-            )
-          : Image.network(
-            mediaUrl!,
-            fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) =>
-                CustomText(text: error.toString()),
-          ),
+      child:
+           Image.network(mediaUrl!,
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) => Container(
+                    height: 120,
+                    
+                  )),
     );
   }
 }

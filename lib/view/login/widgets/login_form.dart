@@ -32,13 +32,6 @@ class _LoginFormState extends State<LoginForm> {
   final FocusNode emailFoucasNode = FocusNode();
   final FocusNode passwordFoucasNode = FocusNode();
   final _form = GlobalKey<FormState>();
-  // _saveForm() {
-  //   final isvalid = _form.currentState!.validate();
-  //   if (!isvalid) {
-  //     return;
-  //   }
-  //   _form.currentState?.save();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +60,7 @@ class _LoginFormState extends State<LoginForm> {
 
   AuthTextFormField _passwordField() {
     return AuthTextFormField(
+      onFieldSubmitted: (_) {},
       hintText: 'Password',
       obscureText: isObscuree,
       validator: (value) {
@@ -81,11 +75,8 @@ class _LoginFormState extends State<LoginForm> {
       onSaved: (value) {
         user['password'] = value!.trim();
 
-        // _saveForm();
       },
-      onFieldSubmitted: (value) {
-        //  _auth.signInWithEmailAndPassword(user['email']!,user['password']!);
-      },
+
       focusNode: passwordFoucasNode,
       suffixIcon: isObscuree
           ? GestureDetector(
@@ -123,7 +114,6 @@ class _LoginFormState extends State<LoginForm> {
       },
       onSaved: (value) {
         user['email'] = value!.trim();
-        print(user['email']);
       },
       onFieldSubmitted: (value) {
         FocusScope.of(context).requestFocus(passwordFoucasNode);
@@ -137,16 +127,11 @@ class _LoginFormState extends State<LoginForm> {
       alignment: Alignment.centerLeft,
       child: CustomTextButton(
         onPressed: () async {
-          // final isvalid = _form.currentState!.validate();
-          // if (!isvalid) {
-          //   return;
-          // }
           _form.currentState?.save();
-
           try {
             await _auth.signInWithEmailAndPassword(
                 user['email']!, user['password']!);
-            Navigator.pushNamed(context, Routes.home);
+            Navigator.pushReplacementNamed(context, Routes.home);
           } on FirebaseAuthException catch (e) {
             ShowDialog.showMyDialog(context,
                 title: 'Error!',

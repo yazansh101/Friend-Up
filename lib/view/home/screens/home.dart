@@ -52,9 +52,9 @@ class _HomeScreenState extends State with WidgetsBindingObserver {
 
   initAppData() async {
     await Provider.of<UserViewModel>(context, listen: false)
-        .initcurrentUserData();
+        .initCurrentUserData();
     await Provider.of<TimeLinePostsViewModel>(context, listen: false)
-        .initPosts();
+        .getTimeLinePosts();
   }
 
   @override
@@ -64,7 +64,7 @@ class _HomeScreenState extends State with WidgetsBindingObserver {
       onTap: closeKeyboard,
       child: Consumer<UserViewModel>(
         builder: (context, userViewModel, child) => Scaffold(
-          //appBar: _buildAppBar(_currentIndex, context),
+          appBar: _buildAppBar(_currentIndex, context),
           body: userViewModel.isFetchingUserData
               ? LoadingIndicator.buildLoadingIndicator()
               : _buildBody(),

@@ -26,14 +26,14 @@ class ChatScreen extends StatelessWidget {
     final chatId = args['chatId'];
 
     return Scaffold(
-        appBar:
-            _buildChatScreenBar(context, args['ownerId'], args['ownerName']),
+        appBar: _buildChatScreenBar(context, args['ownerId'], args['ownerName'],
+            args['ownerProfileImage']),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             _buildMessages(chatId),
             SendMessagesBar(
-              ownerProfileImage:args['ownerProfileImage'],
+              ownerProfileImage: args['ownerProfileImage'],
               chatId: chatId,
               ownerId: args['ownerId'],
               userName: args['ownerName'],
@@ -64,15 +64,19 @@ class ChatScreen extends StatelessWidget {
 }
 
 AppBar _buildChatScreenBar(
-    BuildContext context, String ownerId, String ownerName) {
+  BuildContext context,
+  String ownerId,
+  String ownerName,
+  String ownerImageProfile,
+) {
   final userViewModel = Provider.of<UserViewModel>(context, listen: false);
-  // final auth = Provider.of<AuthViewModel>(context);
 
   const roundedRectangleBorder = RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
     bottomLeft: Radius.circular(25),
     bottomRight: Radius.circular(25),
   ));
+
   return AppBar(
     toolbarHeight: 80,
     backgroundColor: getColorTheme(),
@@ -83,7 +87,8 @@ AppBar _buildChatScreenBar(
     leading: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildProfileSection(context, ownerId, ownerName, userViewModel),
+        _buildProfileSection(
+            context, ownerId, ownerName, ownerImageProfile, userViewModel),
         _buildCallSection(context)
       ],
     ),
@@ -117,7 +122,7 @@ Row _buildCallSection(BuildContext context) {
 }
 
 Row _buildProfileSection(BuildContext context, String ownerId, String ownerName,
-    UserViewModel userViewModel) {
+    String ownerProfileImage, UserViewModel userViewModel) {
   return Row(
     children: [
       IconButton(
@@ -130,51 +135,59 @@ Row _buildProfileSection(BuildContext context, String ownerId, String ownerName,
           color: getContentColorTheme(),
         ),
       ),
-      InkWell(
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ProfileScreen(
-                        userId: ownerId,
-                        userName: ownerName,
-                        key: ValueKey(ownerId),
-                      )));
-        },
-        child: ProfilePictuerOnline(
-          imageUrl: userViewModel.currentUser.imageProfileUrl,
-          ownerId: ownerId,
-          radius1: 20,
-          radius2: 12,
-        ),
-      ),
+      _buildProfilePicture(context, ownerId, ownerName, ownerProfileImage),
       setHorizentalSpace(3),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CustomText(
-            text: ownerName,
-            fontSize: 15,
-          ),
-          setVerticalSpace(0.2),
-          StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(ownerId)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final lastSeen = snapshot.data!['status']['lastSeen'];
-                  return CustomText(
-                    text: TimeHelper.getLastSeen(lastSeen),
-                    fontSize: 11,
-                  );
-                }
-                return const CustomText(text: '');
-              }),
-        ],
-      ),
+      _buildUserLastSeen(ownerName, ownerId),
     ],
   );
+}
+
+Column _buildUserLastSeen(String ownerName, String ownerId) {
+  return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        CustomText(
+          text: ownerName,
+          fontSize: 15,
+        ),
+        setVerticalSpace(0.2),
+        StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('users')
+                .doc(ownerId)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final lastSeen = snapshot.data!['status']['lastSeen'];
+                return CustomText(
+                  text: TimeHelper.getLastSeen(lastSeen),
+                  fontSize: 11,
+                );
+              }
+              return const CustomText(text: '');
+            }),
+      ],
+    );
+}
+
+InkWell _buildProfilePicture(BuildContext context, String ownerId, String ownerName, String ownerProfileImage) {
+  return InkWell(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProfileScreen(
+                      userId: ownerId,
+                      userName: ownerName,
+                      key: ValueKey(ownerId),
+                    )));
+      },
+      child: ProfilePictuerOnline(
+        imageUrl: ownerProfileImage,
+        ownerId: ownerId,
+        radius1: 20,
+        radius2: 12,
+      ),
+    );
 }

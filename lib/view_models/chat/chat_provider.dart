@@ -34,13 +34,16 @@ class ChatProvider {
 
   Future<void> createNewChat({
     required String currentUserId,
+    required String currentUserName,
+    required String currentUserImage,
     required String friendName,
     required String friendId,
     required String chatId,
     required String ownerProfileImage,
   }) async {
     try {
-      db.myFirebase
+      // for current user chats
+     await db.myFirebase
           .collection('chats')
           .doc(currentUserId)
           .collection('userChats')
@@ -49,6 +52,17 @@ class ChatProvider {
         'chatId': chatId,
         'userName': friendName,
         'ownerProfileImage': ownerProfileImage,
+      });
+      // for another user chats
+       await db.myFirebase
+          .collection('chats')
+          .doc(friendId)
+          .collection('userChats')
+          .doc(currentUserId)
+          .set({
+        'chatId': chatId,
+        'userName': currentUserName,
+        'ownerProfileImage': currentUserImage,
       });
     } catch (e) {
       log('error when create a messages collection');

@@ -2,7 +2,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:movie_app/view/login/widgets/socal_buttons.dart';
 
 import '../../../core/constants/constants.dart';
@@ -39,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen>
 
   @override
   void initState() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
 
     super.initState();
     setUpAnimation();
@@ -147,7 +146,6 @@ class _LoginScreenState extends State<LoginScreen>
 
   AnimatedPositioned _login(double screenHeight, double screenWidth) {
     return AnimatedPositioned(
-      //  left: isSign? 0:15,
       right: null,
       duration: Duration(milliseconds: 400),
       child: InkWell(

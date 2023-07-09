@@ -30,7 +30,7 @@ class ShowDialog {
               children: [
                 Container(
                   padding: const EdgeInsets.all(10),
-                  height: height??100,
+                  height: height ?? 200,
                   decoration: BoxDecoration(
                     color: kPrimaryColor.withOpacity(0.8),
                     borderRadius: BorderRadius.circular(20.0),
@@ -39,25 +39,24 @@ class ShowDialog {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                       if(title!='')  setVerticalSpace(3),
-                     if(title!='')  CustomText(
+                      setVerticalSpace(3),
+                      CustomText(
                         text: title,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
-                     if(discription!='')  setVerticalSpace(3),
-                      if(discription!='') CustomText(
+                      setVerticalSpace(3),
+                      CustomText(
                         text: discription,
                         fontSize: 16,
                         alignment: Alignment.center,
                         fontWeight: FontWeight.bold,
                         color: Colors.white70,
                       ),
-                     if(discription!='')  const Spacer(
+                      const Spacer(
                         flex: 1,
                       ),
-        
                       Row(
                         children: [
                           const Spacer(),
@@ -65,14 +64,12 @@ class ShowDialog {
                             onPressed: () {
                               Navigator.pop(context, true);
                             },
-                            child:
-                            CustomText(
-                                text: choiceTrue!,
-                                fontSize: 12,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                           
+                            child: CustomText(
+                              text: choiceTrue!,
+                              fontSize: 12,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           const Spacer(),
                           if (choiceFalse != null)
@@ -91,7 +88,7 @@ class ShowDialog {
                           if (choiceFalse != null) const Spacer(),
                         ],
                       ),
-                      if(discription!='') const Spacer(),
+                      const Spacer(),
                     ],
                   ),
                 ),

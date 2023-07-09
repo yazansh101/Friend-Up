@@ -35,7 +35,7 @@ class _PostsScreenState extends State<PostsScreen> {
 
   initAppData() async {
     await Provider.of<TimeLinePostsViewModel>(context, listen: false)
-        .initPosts();
+        .getTimeLinePosts();
         log('new post added');
   }
 
@@ -57,7 +57,7 @@ class _PostsScreenState extends State<PostsScreen> {
       onRefresh: () async {
           setState(()async {
             await Provider.of<TimeLinePostsViewModel>(context, listen: false)
-        .initPosts();
+        .getTimeLinePosts();
           });
       },
       child: Padding(

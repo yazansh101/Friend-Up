@@ -91,7 +91,7 @@ class ProfileScreen extends StatelessWidget {
                 setVerticalSpace(2),
                 _buildBio(userViewModel.user),
                 setVerticalSpace(2),
-                _buildButtonOptions(userViewModel.currentUser, snapshot, context),
+                _buildButtonOptions(userViewModel.currentUser,userViewModel.user, snapshot, context),
                 setVerticalSpace(3),
                 _buildUserInfo(followersViewModel, userPostViewModel),
                 setVerticalSpace(4),
@@ -124,6 +124,7 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildProfileImage(String profileImage, String ownerID) {
+    log('this is profile image for user $ownerID');
     return Container(
       decoration: BoxDecoration(
           color: getPrimaryColorTheme(),
@@ -158,17 +159,15 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildButtonOptions(
-      User currentUser, AsyncSnapshot snapshot, context) {
+      User currentUser,User user ,AsyncSnapshot snapshot, context) {
     final isMe = currentUser.userId == userId;
-    log(userId);
-    log(currentUser.userId);
     if (isMe) {
       return _buildEditeOption(context);
     } else {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildSendMessageButtonOption(currentUser, context, snapshot),
+          _buildSendMessageButtonOption(currentUser, user,context, snapshot),
           _buildFollowButtonOption(currentUser),
         ],
       );
@@ -193,13 +192,14 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildSendMessageButtonOption(
-      currentUser, context, AsyncSnapshot snapshot) {
+      currentUser,user, context, AsyncSnapshot snapshot) {
     return CustomTextButton(
         color: kPrimaryColor,
         width: setWidth(28),
         height: setHeight(5),
         text: 'Message',
         onPressed: () {
+          log(user.imageProfileUrl);
           final chatId = '$userId${currentUser.userId}';
           Navigator.push(
             context,
@@ -207,8 +207,7 @@ class ProfileScreen extends StatelessWidget {
                 builder: (context) => ChatScreen(
                       args: {
                         'ownerId': userId,
-                        'ownerProfileImage':
-                            "snapshot.data!.profileImage", //TODO
+                        'ownerProfileImage':user.imageProfileUrl,
                         'ownerName': userName,
                         'currentUserId': currentUser.userId,
                         'chatId': chatId,

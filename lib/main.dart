@@ -16,6 +16,7 @@ import 'package:movie_app/view_models/user_posts/uesr_posts_provider.dart';
 import 'package:movie_app/view_models/user_posts/user_posts_view_model.dart';
 import 'package:provider/provider.dart';
 
+import 'core/constants/constants.dart';
 import 'core/helper/firebase_options.dart';
 import 'core/utils/routes.dart';
 
@@ -24,7 +25,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  
+
   runApp(const MyApp());
 }
 
@@ -32,14 +33,19 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky, overlays: []);
-    return MultiProvider(
+                SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor:kPrimaryColor,
+    ),
+  );
+
+   return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
           value: UserViewModel(UserProvider()),
         ),
         ChangeNotifierProvider.value(
-          value: UserPostsViewModel(PostProvider(),PostCache()),
+          value: UserPostsViewModel(PostProvider(), PostCache()),
         ),
         ChangeNotifierProvider.value(
           value: FollowersViewModel(FollowersProvider()),
@@ -58,14 +64,13 @@ class MyApp extends StatelessWidget {
           create: (context) => ActivityFeedViewModel(),
           lazy: false,
         ),
-        
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: lightThemeData(),
         darkTheme: darkThemeData(),
         themeMode: ThemeMode.system,
-        initialRoute: Routes.home,
+        initialRoute: Routes.splashScreen,
         routes: Routes.routes,
         debugShowCheckedModeBanner: false,
       ),

@@ -78,7 +78,9 @@ class PostRetriever {
         .get();
     if (nextQuerySnapshot.docs.isNotEmpty) {
       lastDocument = nextQuerySnapshot.docs[nextQuerySnapshot.docs.length - 1];
+      log('NextTimeLinePosts not impty');
     }
+
     return nextQuerySnapshot;
   }
 
@@ -94,7 +96,7 @@ class PostRetriever {
       log('Successfully retrieved user posts!');
       return snapshot;
     } catch (e) {
-      log('Error getting user posts: $e');
+      log('Error when getting user posts: $e');
       rethrow;
     }
   }

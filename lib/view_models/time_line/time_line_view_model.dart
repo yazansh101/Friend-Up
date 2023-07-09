@@ -8,13 +8,21 @@ import '../../models/post_model.dart';
 import '../user_posts/uesr_posts_provider.dart';
 
 class TimeLinePostsViewModel with ChangeNotifier {
+
+
   final PostProvider _postProvider;
   TimeLinePostsViewModel(this._postProvider);
+
+
   static provider(context, {listen = false}) =>
       Provider.of<TimeLinePostsViewModel>(context, listen: listen);
+
+
   List<Post>? _timeLinePosts = [];
   List<Post>? get timeLinePosts => _timeLinePosts;
-  bool isWaittingPosts = false;
+
+
+  bool isWaittingFetchPosts = false;
 
   Future<void> createPost({
     required String ownerName,
@@ -30,11 +38,11 @@ class TimeLinePostsViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  initPosts() async {
-    isWaittingPosts = true;
+  getTimeLinePosts() async {
+    isWaittingFetchPosts = true;
     final snapshot = await _postProvider.getTimeLinePosts();
     mappingPosts(snapshot.docs);
-    isWaittingPosts = false;
+    isWaittingFetchPosts = false;
     notifyListeners();
   }
 
