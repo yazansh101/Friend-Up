@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -34,8 +32,10 @@ class ProfilePictuerOnline extends StatelessWidget {
       return StreamBuilder(
           stream: userViewModel.getUserStatus(ownerId),
           builder: (context, snapshot) {
-            userViewModel.initUserStatus(snapshot);
-            log(snapshot.data.toString());
+            if(snapshot.connectionState==ConnectionState.done){
+           userViewModel.initUserStatus(snapshot);
+              
+            }
             return Positioned(
               right: 0,
               bottom: 0,
