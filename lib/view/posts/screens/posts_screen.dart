@@ -36,7 +36,6 @@ class _PostsScreenState extends State<PostsScreen> {
   initAppData() async {
     await Provider.of<TimeLinePostsViewModel>(context, listen: false)
         .getTimeLinePosts();
-        log('new post added');
   }
 
   @override

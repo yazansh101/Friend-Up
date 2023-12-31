@@ -33,12 +33,10 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-                SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor:kPrimaryColor,
-    ),
-  );
-
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+  statusBarColor: kPrimaryColor
+));
    return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
@@ -66,7 +64,6 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
         theme: lightThemeData(),
         darkTheme: darkThemeData(),
         themeMode: ThemeMode.system,

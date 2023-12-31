@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:movie_app/core/helper/navigator_service.dart';
 import 'package:movie_app/core/widgets/user_card.dart';
@@ -6,24 +8,31 @@ import 'package:movie_app/view/profile/screens/profile_screen.dart';
 import 'package:movie_app/view_models/searching/searching_view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/helper/progress_indecator.dart';
-import '../../../core/helper/lottie_animation.dart';
 import '../../../core/constants/constants.dart';
+import '../../../core/constants/size_config.dart';
+import '../../../core/helper/lottie_animation.dart';
+import '../../../core/helper/progress_indecator.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final searchViewMOdel = Provider.of<SearchViewModel>(context);
+    log('search screen build');
+    final searchViewMOdel =
+        Provider.of<SearchViewModel>(context, listen: false);
     return SafeArea(
       child: Scaffold(
         body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            setVerticalSpace(3),
             _buildSearchField(searchViewMOdel),
+            const Spacer(),
             searchViewMOdel.isSearching
                 ? Center(child: LoadingIndicator.buildLoadingIndicator())
                 : _buildListOfSearchingResult(searchViewMOdel),
+            const Spacer(),
           ],
         ),
       ),
@@ -57,6 +66,7 @@ class SearchScreen extends StatelessWidget {
           if (value.isEmpty || value == '') {
             return;
           } else {
+            log('search for user from submit');
             searchViewMOdel.searchforUser(value);
           }
         },
@@ -66,11 +76,13 @@ class SearchScreen extends StatelessWidget {
 
   Widget _buildListOfSearchingResult(SearchViewModel searchViewMOdel) {
     return searchViewMOdel.usersOfSearchingReslut.isEmpty
-        ? const LottieAnimation(
-            asset: 'assets/lottie_files/empty-ghost.json',
-            width: 200.0,
-            height: 200.0,
-            loop: true,
+        ? const Center(
+            child: LottieAnimation(
+              asset: 'assets/lottie_files/empty-ghost.json',
+              width: 200.0,
+              height: 200.0,
+              loop: true,
+            ),
           )
         : Expanded(
             child: ListView.builder(

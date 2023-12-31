@@ -45,7 +45,6 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log(userId);
     return Scaffold(appBar: _buildAppBar(context), body: _buildBody(context));
   }
 
@@ -124,7 +123,6 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildProfileImage(String profileImage, String ownerID) {
-    log('this is profile image for user $ownerID');
     return Container(
       decoration: BoxDecoration(
           color: getPrimaryColorTheme(),
@@ -149,8 +147,8 @@ class ProfileScreen extends StatelessWidget {
       ),
       actions: [
         IconButton(
-            onPressed: () {
-              authViewModel.signOut();
+            onPressed: () async {
+             await authViewModel.signOut();
               Navigator.pushReplacementNamed(context, Routes.login);
             },
             icon: Icon(Icons.logout_outlined))

@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 
 import '../../../core/helper/navigator_service.dart';
 import '../../../core/helper/progress_indecator.dart';
-import '../../../view_models/time_line/time_line_view_model.dart';
 import '../../../view_models/user/user_view_model.dart';
 import '../../profile/screens/profile_screen.dart';
 import '../../search/screens/search_screen.dart';
@@ -29,7 +28,6 @@ class _HomeScreenState extends State with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-    initAppData();
     super.initState();
   }
 
@@ -50,13 +48,6 @@ class _HomeScreenState extends State with WidgetsBindingObserver {
   //   }
   // }
 
-  initAppData() async {
-    await Provider.of<UserViewModel>(context, listen: false)
-        .initCurrentUserData();
-    await Provider.of<TimeLinePostsViewModel>(context, listen: false)
-        .getTimeLinePosts();
-  }
-
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
@@ -64,7 +55,7 @@ class _HomeScreenState extends State with WidgetsBindingObserver {
       onTap: closeKeyboard,
       child: Consumer<UserViewModel>(
         builder: (context, userViewModel, child) => Scaffold(
-          appBar: _buildAppBar(_currentIndex, context),
+         appBar: _buildAppBar(_currentIndex, context),
           body: userViewModel.isFetchingUserData
               ? LoadingIndicator.buildLoadingIndicator()
               : _buildBody(),
@@ -112,14 +103,12 @@ class _HomeScreenState extends State with WidgetsBindingObserver {
         ChatsScreen()
       ],
       onPageChanged: (index) {
-        setState(() {
-          _currentIndex = index;
-        });
+        _currentIndex = index;
       },
     );
   }
 
-  AppBar? _buildAppBar(index, context) {
+AppBar? _buildAppBar(index, context) {
     final userViewMOdel = Provider.of<UserViewModel>(context, listen: true);
     if (index == 0) {
       return AppBar(
@@ -166,4 +155,5 @@ class _HomeScreenState extends State with WidgetsBindingObserver {
       return null;
     }
   }
+
 }

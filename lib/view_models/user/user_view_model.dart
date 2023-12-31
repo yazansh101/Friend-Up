@@ -11,9 +11,10 @@ import '../../models/user_model.dart';
 
 class UserViewModel with ChangeNotifier {
   final UserProvider _userProvider;
+  UserViewModel(this._userProvider) {
+    initCurrentUserData();
+  }
   bool isFetchingUserData = false;
-
-  UserViewModel(this._userProvider);
 
   static provider(context, {listen = false}) =>
       Provider.of<UserViewModel>(context, listen: listen);
@@ -27,13 +28,14 @@ class UserViewModel with ChangeNotifier {
   User get currentUser => _userProvider.currentUser;
 
   Future<void> initCurrentUserData() async {
-    toggleisFetching();
+     toggleisFetching();
     await _userProvider.initcurrentUserData();
-    toggleisFetching();
+     toggleisFetching();
   }
 
   toggleisFetching() {
     isFetchingUserData = !isFetchingUserData;
+    log('toggleisFetching is $isFetchingUserData');
     notifyListeners();
   }
 
@@ -41,7 +43,7 @@ class UserViewModel with ChangeNotifier {
     try {
       final doc = await _userProvider.getUserInfo(userId);
       user = User.fromJson(doc);
-      } catch (e) {
+    } catch (e) {
       log('the error when get user data is :$e');
     }
   }
@@ -51,7 +53,7 @@ class UserViewModel with ChangeNotifier {
       final stream = _userProvider.getUserInfoStream(userId);
       yield* stream;
     } catch (e) {
-      log('$e');
+      log('this error when getUserStatus $e');
       yield* const Stream.empty();
     }
   }
@@ -61,7 +63,7 @@ class UserViewModel with ChangeNotifier {
     try {
       final data = snapshot.data;
       final user = User.fromJson(data);
-      isOnline = user.status['isOnline'];
+        isOnline = user.status['isOnline'];
     } catch (e) {
       log('here is the error $e');
     }

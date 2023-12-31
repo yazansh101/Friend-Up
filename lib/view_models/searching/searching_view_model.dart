@@ -17,7 +17,6 @@ class SearchViewModel with ChangeNotifier {
   TextEditingController controller = TextEditingController();
 
   Future<void> searchforUser(String searchTerm) async {
-    toggleIsSearching();
     try {
       final documents = await _userProvider.searchForUser(searchTerm);
       _usersOfSearchingReslut =
@@ -27,9 +26,8 @@ class SearchViewModel with ChangeNotifier {
       log(e.toString());
     }
 
-    toggleIsSearching();
+     //  notifyListeners();
 
-    notifyListeners();
   }
 
   toggleIsSearching() {
@@ -39,6 +37,5 @@ class SearchViewModel with ChangeNotifier {
 
   closeSearching() {
     controller.clear();
-    notifyListeners();
   }
 }
