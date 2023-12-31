@@ -6,7 +6,6 @@ import 'package:movie_app/services/firebase_auth/firebase_auth_service.dart';
 import '../../services/firebase_auth/google_auth_service.dart';
 
 class AuthViewModel {
-  //final AuthService _facebookAuth = FacebookAuthService();
   final AuthService _googleAuth = GoogleAuthService();
   final FirebaseAuthService _firebaseAuth = FirebaseAuthService();
 

@@ -59,6 +59,7 @@ dependencies:
   flutter_launcher_icons: ^0.9.3
   bloc: ^8.1.2
   equatable: ^2.0.5
+  dartz: ^0.10.1
 
 
 flutter_icons:
