@@ -22,32 +22,24 @@ class ActivityItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: _buildProfilePicture(userImage),
-      title: _buildActivityInfo(),
-    );
-  }
-
-  Column _buildActivityInfo() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(
-            text: '$userName $activityType ',
-            fontSize: 16,
-            alignment: Alignment.centerLeft),
-        setVerticalSpace(0.5),
-        CustomText(
-          text: time,
-          color: Colors.grey,
-        ),
-      ],
-    );
-  }
-
-  CircleAvatar _buildProfilePicture(userImage) {
-    return CircleAvatar(
-      backgroundImage: NetworkImage(userImage),
-      radius: 19,
+      leading: CircleAvatar(
+        backgroundImage: NetworkImage(userImage),
+        radius: 19,
+      ),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomText(
+              text: '$userName $activityType ',
+              fontSize: 16,
+              alignment: Alignment.centerLeft),
+          setVerticalSpace(0.5),
+          CustomText(
+            text: time,
+            color: Colors.grey,
+          ),
+        ],
+      ),
     );
   }
 }

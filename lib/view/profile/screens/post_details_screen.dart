@@ -27,14 +27,8 @@ class PostDetailsScreen extends StatelessWidget {
         Provider.of<TimeLinePostsViewModel>(context, listen: true);
     return Scaffold(
       appBar: AppBar(),
-      body: _buildBody(userViewModel, context, timeLinePostsViewModel),
-    );
-  }
-
-  Padding _buildBody(UserViewModel userViewModel, BuildContext context,
-      TimeLinePostsViewModel timeLinePostsViewModel) {
-    log(post.likes.length.toString());
-    return Padding(
+      body: 
+     Padding(
       padding: const EdgeInsets.only(top: 15.0),
       child: PostWidget(
         ownerProfileImage: post.ownerProfileImage,
@@ -54,6 +48,8 @@ class PostDetailsScreen extends StatelessWidget {
           userName: post.ownerName,
           discription: post.discription,
           imageUrl: post.mediaUrl),
+    ),
     );
   }
+
 }

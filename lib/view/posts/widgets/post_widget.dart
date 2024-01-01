@@ -42,10 +42,12 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var userViewModel = Provider.of<UserViewModel>(context, listen: false);
+
     var boxDecoration = BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: getColorTheme(),
-      );
+      borderRadius: BorderRadius.circular(20),
+      color: getColorTheme(),
+    );
     return Container(
       padding: const EdgeInsets.all(16.0),
       margin: const EdgeInsets.symmetric(vertical: 5),
@@ -53,113 +55,100 @@ class PostWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-         _buildUserHeader(context,ownerProfileImage),
+          GestureDetector(
+              onTap: () {
+                NavigatorService.pushFadeTransition(
+                    context,
+                    ProfileScreen(
+                        userId: postOwnerId,
+                        userName: userName!,
+                        key: ValueKey(postOwnerId)),
+                    arguments: {
+                      'ownerId': postOwnerId,
+                      'ownerName': userName,
+                    });
+              },
+              child: Hero(
+                tag: HeroTag.postHeader(postId),
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: UserHeader(
+                    imageUrl: imageUrl ?? '',
+                    postOwnerId: postOwnerId,
+                    postTime: TimeHelper.getLastSeen(
+                        Timestamp.fromDate(DateTime.parse(time!))),
+                    userName: userName!,
+                  ),
+                ),
+              )),
           setVerticalSpace(2),
-         _buildMediaItem(),
+          Hero(
+              tag: HeroTag.image(imageUrl!),
+              child: Material(
+                  type: MaterialType.transparency,
+                  child: MediaItem(mediaUrl: imageUrl))),
           setVerticalSpace(2),
-          _buildActivityIcons(context),
+          Row(
+            children: [
+              Consumer<TimeLinePostsViewModel>(
+                builder: (context, timeLinePostsViewModel, child) => InkWell(
+                    onTap: () {
+                      onLike();
+                    },
+                    child: timeLinePostsViewModel.isPostLiked(
+                                postId, userViewModel.currentUser.userId) ==
+                            true
+                        ? Icon(
+                            FontAwesomeIcons.solidHeart,
+                            color: kPrimaryColor,
+                            size: 18,
+                          )
+                        : Icon(
+                            opticalSize: 15,
+                            FontAwesomeIcons.heart,
+                            color: kPrimaryColor,
+                            size: 18,
+                          )),
+              ),
+              setHorizentalSpace(4),
+              InkWell(
+                onTap: onComment,
+                child: const Icon(
+                  FontAwesomeIcons.comment,
+                  size: 18.0,
+                  color: kPrimaryColor,
+                ),
+              ),
+            ],
+          ),
           setVerticalSpace(2),
-          _likesCommentsInfo(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Consumer<TimeLinePostsViewModel>(
+                builder: (context, timeLinePostsViewModel, child) => Text.rich(
+                    TextSpan(
+                        text: timeLinePostsViewModel
+                            .getPostLikes(postId)
+                            .toString(),
+                        style: TextStyle(
+                          fontSize: 12,
+                        ),
+                        children: [
+                      TextSpan(
+                        style: TextStyle(
+                            fontSize: 12, color: Colors.black.withOpacity(0.4)),
+                        text: ' Likes ',
+                      ),
+                    ])),
+              ),
+              setHorizentalSpace(2),
+            ],
+          ),
           setVerticalSpace(2),
           Text(discription),
         ],
       ),
-    );
-  }
-
-  Hero _buildMediaItem() {
-    return Hero(
-        tag: HeroTag.image(imageUrl!),
-        child: Material(
-            type: MaterialType.transparency,
-            child: MediaItem(mediaUrl: imageUrl)));
-  }
-
-  GestureDetector _buildUserHeader(BuildContext context,imageUrl) {
-    return GestureDetector(
-        onTap: () {
-          NavigatorService.pushFadeTransition(context, ProfileScreen(userId: postOwnerId,userName:userName! ,key: ValueKey(postOwnerId)),
-              arguments: {
-                'ownerId': postOwnerId,
-                'ownerName': userName,
-              });
-        },
-        child: Hero(
-          tag: HeroTag.postHeader(postId),
-          child: Material(
-            type: MaterialType.transparency,
-            child: 
-            UserHeader(
-              imageUrl:imageUrl,
-              postOwnerId: postOwnerId,
-              postTime: TimeHelper.getLastSeen(
-                  Timestamp.fromDate(DateTime.parse(time!))),
-              userName: userName!,
-            ),
-          ),
-        ));
-  }
-
-  Row _likesCommentsInfo() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Consumer<TimeLinePostsViewModel>(
-          builder: (context, timeLinePostsViewModel, child) =>
-              Text.rich(TextSpan(
-                  text: timeLinePostsViewModel.getPostLikes(postId).toString(),
-                  style: TextStyle(
-                    fontSize: 12,
-                  ),
-                  children: [
-                TextSpan(
-                  style: TextStyle(
-                      fontSize: 12, color: Colors.black.withOpacity(0.4)),
-                  text: ' Likes ',
-                ),
-              ])),
-        ),
-        setHorizentalSpace(2),
-      ],
-    );
-  }
-
-  Widget _buildActivityIcons(context) {
-
-
-    var userViewModel = Provider.of<UserViewModel>(context, listen: false);
-    return Row(
-      children: [
-        Consumer<TimeLinePostsViewModel>(
-          builder: (context, timeLinePostsViewModel, child) => InkWell(
-              onTap: () {
-                onLike();
-              },
-              child: timeLinePostsViewModel.isPostLiked(
-                          postId, userViewModel.currentUser.userId) ==
-                      true
-                  ? Icon(
-                    FontAwesomeIcons.solidHeart,
-                    color: kPrimaryColor,
-                    size: 18,
-                  )
-                  : Icon(
-                      opticalSize: 15,
-                      FontAwesomeIcons.heart,
-                      color: kPrimaryColor,
-                      size: 18,
-                    )),
-        ),
-        setHorizentalSpace(4),
-        InkWell(
-          onTap: onComment,
-          child: const Icon(
-            FontAwesomeIcons.comment,
-            size: 18.0,
-            color: kPrimaryColor,
-          ),
-        ),
-      ],
     );
   }
 }

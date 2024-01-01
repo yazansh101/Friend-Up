@@ -58,8 +58,25 @@ class _HomeScreenState extends State with WidgetsBindingObserver {
          appBar: _buildAppBar(_currentIndex, context),
           body: userViewModel.isFetchingUserData
               ? LoadingIndicator.buildLoadingIndicator()
-              : _buildBody(),
-          bottomNavigationBar: _buildBottomNavigationBar(),
+              : 
+    PageView(
+      physics: const NeverScrollableScrollPhysics(),
+      controller: _pageController,
+      children: const [
+        PostsScreen(),
+        SearchScreen(),
+        ActivityFeedScreen(),
+        ChatsScreen()
+      ],
+      onPageChanged: (index) {
+        _currentIndex = index;
+      },
+    )
+  ,
+          bottomNavigationBar:CustomBottomNavigationBar(
+      currentIndex: _currentIndex,
+      onTap: _onTap,
+    ),
         ),
       ),
     );
@@ -85,28 +102,9 @@ class _HomeScreenState extends State with WidgetsBindingObserver {
     });
   }
 
-  CustomBottomNavigationBar _buildBottomNavigationBar() {
-    return CustomBottomNavigationBar(
-      currentIndex: _currentIndex,
-      onTap: _onTap,
-    );
-  }
+  
 
-  PageView _buildBody() {
-    return PageView(
-      physics: const NeverScrollableScrollPhysics(),
-      controller: _pageController,
-      children: const [
-        PostsScreen(),
-        SearchScreen(),
-        ActivityFeedScreen(),
-        ChatsScreen()
-      ],
-      onPageChanged: (index) {
-        _currentIndex = index;
-      },
-    );
-  }
+ 
 
 AppBar? _buildAppBar(index, context) {
     final userViewMOdel = Provider.of<UserViewModel>(context, listen: true);

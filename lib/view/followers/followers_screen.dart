@@ -11,37 +11,33 @@ class FollowersScreen extends StatelessWidget {
   const FollowersScreen({super.key});
   @override
   Widget build(BuildContext context) {
-
-    final followersViewModel = Provider.of<FollowersViewModel>(context,listen: false);
+    final followersViewModel =
+        Provider.of<FollowersViewModel>(context, listen: false);
     final List followers = followersViewModel.myFollowers!;
     log(followers[0].email);
     return Scaffold(
         appBar: AppBar(
           title: const Text('My Followers'),
         ),
-        body: _buildFollowersList(followers));
-  }
-
-  AnimationLimiter _buildFollowersList(List followers) {
-    return AnimationLimiter(
-        child: ListView.builder(
-          itemCount: followers.length,
-          itemBuilder: (BuildContext context, int index) {
-            return AnimationConfiguration.staggeredList(
-              position: index,
-              duration: const Duration(milliseconds: 375),
-              child: SlideAnimation(
-                verticalOffset: 50.0,
-                child: FadeInAnimation(
-                    child: UserCard(
-                  name: followers[index].userName,
-                  userId: followers[index].userId,
-                  userImageUrl: followers[index].imageProfileUrl,
-                )),
-              ),
-            );
-          },
-        ),
-      );
+        body: AnimationLimiter(
+          child: ListView.builder(
+            itemCount: followers.length,
+            itemBuilder: (BuildContext context, int index) {
+              return AnimationConfiguration.staggeredList(
+                position: index,
+                duration: const Duration(milliseconds: 375),
+                child: SlideAnimation(
+                  verticalOffset: 50.0,
+                  child: FadeInAnimation(
+                      child: UserCard(
+                    name: followers[index].userName,
+                    userId: followers[index].userId,
+                    userImageUrl: followers[index].imageProfileUrl,
+                  )),
+                ),
+              );
+            },
+          ),
+        ));
   }
 }

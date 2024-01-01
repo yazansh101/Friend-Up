@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:movie_app/core/helper/navigator_service.dart';
 import 'package:movie_app/core/widgets/user_card.dart';
-import 'package:movie_app/models/user_model.dart';
 import 'package:movie_app/view/profile/screens/profile_screen.dart';
 import 'package:movie_app/view_models/searching/searching_view_model.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +26,38 @@ class SearchScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             setVerticalSpace(3),
-            _buildSearchField(searchViewMOdel),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                autofocus: true,
+                style: const TextStyle(fontSize: 20.0),
+                decoration: InputDecoration(
+                  hintText: 'Search...',
+                  filled: true,
+                  fillColor: Colors.white,
+                  suffixIcon: searchViewMOdel.isSearching
+                      ? IconButton(
+                          icon: const Icon(
+                            Icons.clear,
+                            color: kPrimaryColor,
+                          ),
+                          onPressed: () {
+                            searchViewMOdel.closeSearching();
+                          },
+                        )
+                      : null,
+                ),
+                controller: searchViewMOdel.controller,
+                onSubmitted: (value) {
+                  if (value.isEmpty || value == '') {
+                    return;
+                  } else {
+                    log('search for user from submit');
+                    searchViewMOdel.searchforUser(value);
+                  }
+                },
+              ),
+            ),
             const Spacer(),
             searchViewMOdel.isSearching
                 ? Center(child: LoadingIndicator.buildLoadingIndicator())
@@ -35,41 +65,6 @@ class SearchScreen extends StatelessWidget {
             const Spacer(),
           ],
         ),
-      ),
-    );
-  }
-
-  Padding _buildSearchField(SearchViewModel searchViewMOdel) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextField(
-        autofocus: true,
-        style: const TextStyle(fontSize: 20.0),
-        decoration: InputDecoration(
-          hintText: 'Search...',
-          filled: true,
-          fillColor: Colors.white,
-          suffixIcon: searchViewMOdel.isSearching
-              ? IconButton(
-                  icon: const Icon(
-                    Icons.clear,
-                    color: kPrimaryColor,
-                  ),
-                  onPressed: () {
-                    searchViewMOdel.closeSearching();
-                  },
-                )
-              : null,
-        ),
-        controller: searchViewMOdel.controller,
-        onSubmitted: (value) {
-          if (value.isEmpty || value == '') {
-            return;
-          } else {
-            log('search for user from submit');
-            searchViewMOdel.searchforUser(value);
-          }
-        },
       ),
     );
   }
@@ -89,22 +84,20 @@ class SearchScreen extends StatelessWidget {
               itemCount: searchViewMOdel.usersOfSearchingReslut.length,
               itemBuilder: (BuildContext context, int index) {
                 final user = searchViewMOdel.usersOfSearchingReslut[index];
-                return _buildUserItem(context, user);
+                return GestureDetector(
+                  onTap: () {
+                    NavigatorService.pushFadeTransition(
+                        context,
+                        ProfileScreen(
+                            userId: user.userId, userName: user.userName));
+                  },
+                  child: UserCard(
+                      name: user.userName,
+                      userImageUrl: user.imageProfileUrl,
+                      userId: user.userId),
+                );
               },
             ),
           );
-  }
-
-  GestureDetector _buildUserItem(BuildContext context, User user) {
-    return GestureDetector(
-      onTap: () {
-        NavigatorService.pushFadeTransition(context,
-            ProfileScreen(userId: user.userId, userName: user.userName));
-      },
-      child: UserCard(
-          name: user.userName,
-          userImageUrl: user.imageProfileUrl,
-          userId: user.userId),
-    );
   }
 }
