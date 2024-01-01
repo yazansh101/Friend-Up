@@ -23,6 +23,6 @@ void main() async {
           firebaseStorage: FirebaseStorage.instance));
 
   repo.readComments('postId').listen((event) {
-    event.fold((l) => print(l), (r) => print('r'));
+    event.fold((l) => print(l), (r) => print(r.length.toString()));
   });
 }
