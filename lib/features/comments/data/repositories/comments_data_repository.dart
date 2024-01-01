@@ -48,10 +48,13 @@ class CommentsDataRepository extends CommentsDomainRepository {
   @override
   Stream<Either<Failure, List<CommentEntity>>> readComments(
       String postId) async* {
-  try {
-      final comments = repostory.readComments(postId);
-      yield Right(comments as List<CommentEntity>);
-    }on Exception catch (e) {
+    try {
+      List<CommentEntity> comments = [];
+      repostory.readComments(postId).listen((event) {
+        comments.addAll(event);
+      });
+      yield Right(comments);
+    } on Exception catch (e) {
       yield Left(e.toFailure);
     }
   }

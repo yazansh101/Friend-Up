@@ -27,7 +27,7 @@ class CommentsRemoteDataSourceImpl implements CommentsRemoteDataSource {
   @override
   Future<void> createComment(CommentEntity comment) async {
     final commentCollection = firebaseFirestore
-        .collection(FirebaseConst.posts)
+        .collection(FirebaseConst.comment)
         .doc(comment.postId)
         .collection(FirebaseConst.comment);
 
@@ -43,29 +43,24 @@ class CommentsRemoteDataSourceImpl implements CommentsRemoteDataSource {
             createAt: comment.createAt)
         .toJson();
 
-    try {
-      final commentDocRef =
-          await commentCollection.doc(comment.commentId).get();
+    final commentDocRef = await commentCollection.doc(comment.commentId).get();
 
-      if (!commentDocRef.exists) {
-        commentCollection.doc(comment.commentId).set(newComment).then((value) {
-          final postCollection = firebaseFirestore
-              .collection(FirebaseConst.posts)
-              .doc(comment.postId);
+    if (!commentDocRef.exists) {
+      commentCollection.doc(comment.commentId).set(newComment).then((value) {
+        final postCollection = firebaseFirestore
+            .collection(FirebaseConst.posts)
+            .doc(comment.postId);
 
-          postCollection.get().then((value) {
-            if (value.exists) {
-              final totalComments = value.get('totalComments');
-              postCollection.update({"totalComments": totalComments + 1});
-              return;
-            }
-          });
+        postCollection.get().then((value) {
+          if (value.exists) {
+            final totalComments = value.get('totalComments');
+            postCollection.update({"totalComments": totalComments + 1});
+            return;
+          }
         });
-      } else {
-        commentCollection.doc(comment.commentId).update(newComment);
-      }
-    } catch (e) {
-      print("some error occured $e");
+      });
+    } else {
+      commentCollection.doc(comment.commentId).update(newComment);
     }
   }
 
@@ -101,7 +96,7 @@ class CommentsRemoteDataSourceImpl implements CommentsRemoteDataSource {
         .collection(FirebaseConst.posts)
         .doc(comment.postId)
         .collection(FirebaseConst.comment);
-    const currentUid ='';
+    const currentUid = '';
 
     final commentRef = await commentCollection.doc(comment.commentId).get();
 
@@ -126,7 +121,9 @@ class CommentsRemoteDataSourceImpl implements CommentsRemoteDataSource {
         .doc(postId)
         .collection(FirebaseConst.comment)
         .orderBy("createAt", descending: true);
-    return commentCollection.snapshots().map((querySnapshot) =>
+    return commentCollection.snapshots()
+    .
+    map((querySnapshot) =>
         querySnapshot.docs.map((e) => CommentModel.fromSnapshot(e)).toList());
   }
 
