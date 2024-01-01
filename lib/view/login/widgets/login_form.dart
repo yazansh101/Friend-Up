@@ -45,121 +45,104 @@ class _LoginFormState extends State<LoginForm> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Spacer(),
-            _emailFeild(context),
+            AuthTextFormField(
+              hintText: 'Email',
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return kEmailNullError;
+                } else if (!emailValidatorRegExp.hasMatch(value)) {
+                  return kInvalidEmailError;
+                } else {
+                  return null;
+                }
+              },
+              onSaved: (value) {
+                user['email'] = value!.trim();
+              },
+              onFieldSubmitted: (value) {
+                FocusScope.of(context).requestFocus(passwordFoucasNode);
+              },
+              focusNode: emailFoucasNode,
+            ),
             setVerticalSpace(3),
-            _passwordField(),
-            _forgotPassword(),
+            AuthTextFormField(
+              onFieldSubmitted: (_) {},
+              hintText: 'Password',
+              obscureText: isObscuree,
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return kPassNullError;
+                } else if (value.length < 8) {
+                  return kShortPassError;
+                } else {
+                  return null;
+                }
+              },
+              onSaved: (value) {
+                user['password'] = value!.trim();
+              },
+              focusNode: passwordFoucasNode,
+              suffixIcon: isObscuree
+                  ? GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isObscuree = !isObscuree;
+                        });
+                      },
+                      child: Image.asset(
+                        iconName('eye-crossed'),
+                        scale: 28,
+                        color: Colors.white38,
+                      ))
+                  : IconButton(
+                      onPressed: () {
+                        setState(() {
+                          isObscuree = !isObscuree;
+                        });
+                      },
+                      icon: const Icon(Icons.remove_red_eye)),
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () {},
+                child: const Text(
+                  "Forgot Password?",
+                  style: TextStyle(color: Colors.white30),
+                ),
+              ),
+            ),
             setVerticalSpace(5),
-            _letsStartBotton(),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: CustomTextButton(
+                onPressed: () async {
+                  _form.currentState?.save();
+                  try {
+                    await _auth.signInWithEmailAndPassword(
+                        user['email']!, user['password']!);
+                    Navigator.pushReplacementNamed(context, Routes.home);
+                  } on FirebaseAuthException catch (e) {
+                    ShowDialog.showMyDialog(
+                      context,
+                      title: 'Error!',
+                      discription: e.code == 'user-not-found'
+                          ? 'No user found for that email.'
+                          : 'Wrong password provided for that user.',
+                      choiceTrue: 'Got it',
+                      onChoiceTrue: () {},
+                    );
+                    log('$e');
+                  }
+                },
+                text: "Let's Start",
+                color: Colors.white38,
+                textColor: Colors.grey.shade300,
+                width: double.infinity,
+              ),
+            ),
             const Spacer(flex: 3),
           ],
-        ),
-      ),
-    );
-  }
-
-  AuthTextFormField _passwordField() {
-    return AuthTextFormField(
-      onFieldSubmitted: (_) {},
-      hintText: 'Password',
-      obscureText: isObscuree,
-      validator: (value) {
-        if (value!.isEmpty) {
-          return kPassNullError;
-        } else if (value.length < 8) {
-          return kShortPassError;
-        } else {
-          return null;
-        }
-      },
-      onSaved: (value) {
-        user['password'] = value!.trim();
-
-      },
-
-      focusNode: passwordFoucasNode,
-      suffixIcon: isObscuree
-          ? GestureDetector(
-              onTap: () {
-                setState(() {
-                  isObscuree = !isObscuree;
-                });
-              },
-              child: Image.asset(
-                iconName('eye-crossed'),
-                scale: 28,
-                color: Colors.white38,
-              ))
-          : IconButton(
-              onPressed: () {
-                setState(() {
-                  isObscuree = !isObscuree;
-                });
-              },
-              icon: const Icon(Icons.remove_red_eye)),
-    );
-  }
-
-  AuthTextFormField _emailFeild(BuildContext context) {
-    return AuthTextFormField(
-      hintText: 'Email',
-      validator: (value) {
-        if (value!.isEmpty) {
-          return kEmailNullError;
-        } else if (!emailValidatorRegExp.hasMatch(value)) {
-          return kInvalidEmailError;
-        } else {
-          return null;
-        }
-      },
-      onSaved: (value) {
-        user['email'] = value!.trim();
-      },
-      onFieldSubmitted: (value) {
-        FocusScope.of(context).requestFocus(passwordFoucasNode);
-      },
-      focusNode: emailFoucasNode,
-    );
-  }
-
-  Align _letsStartBotton() {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: CustomTextButton(
-        onPressed: () async {
-          _form.currentState?.save();
-          try {
-            await _auth.signInWithEmailAndPassword(
-                user['email']!, user['password']!);
-            Navigator.pushReplacementNamed(context, Routes.home);
-          } on FirebaseAuthException catch (e) {
-            ShowDialog.showMyDialog(context,
-                title: 'Error!',
-                discription: e.code == 'user-not-found'
-                    ? 'No user found for that email.'
-                    : 'Wrong password provided for that user.',
-                choiceTrue: 'Got it',
-                onChoiceTrue: () {},
-                );
-            log('$e');
-          }
-        },
-        text: "Let's Start",
-        color: Colors.white38,
-        textColor: Colors.grey.shade300,
-        width: double.infinity,
-      ),
-    );
-  }
-
-  Align _forgotPassword() {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: TextButton(
-        onPressed: () {},
-        child: const Text(
-          "Forgot Password?",
-          style: TextStyle(color: Colors.white30),
         ),
       ),
     );

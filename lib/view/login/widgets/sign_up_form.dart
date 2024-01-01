@@ -49,6 +49,8 @@ class _SignUpFormState extends State<SignUpForm> {
 
   @override
   Widget build(BuildContext context) {
+    final userViewModel = Provider.of<UserViewModel>(context, listen: false);
+
     return Padding(
       padding: EdgeInsets.only(
         left: MediaQuery.of(context).size.width * 0.16,
@@ -59,127 +61,113 @@ class _SignUpFormState extends State<SignUpForm> {
         child: Column(
           children: [
             const Spacer(),
-            _userNameField(context),
+            AuthTextFormField(
+              hintText: "user_name",
+              onSaved: (value) {
+                user['name'] = value!;
+              },
+              onFieldSubmitted: (value) {
+                FocusScope.of(context).requestFocus(emailFoucasNode);
+              },
+            ),
             setVerticalSpace(2),
-            _emailField(context),
+            AuthTextFormField(
+              onSaved: (value) {
+                user['email'] = value!;
+              },
+              focusNode: emailFoucasNode,
+              hintText: 'email@example.com',
+              onFieldSubmitted: (value) {
+                FocusScope.of(context).requestFocus(passwordFoucasNode);
+              },
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return kEmailNullError;
+                } else if (!emailValidatorRegExp.hasMatch(value)) {
+                  return kInvalidEmailError;
+                } else {
+                  return null;
+                }
+              },
+            ),
             setVerticalSpace(2),
-            _passwordField(),
+            AuthTextFormField(
+                focusNode: passwordFoucasNode,
+                hintText: "Password",
+                obscureText: isObscuree,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return kPassNullError;
+                  } else if (value.length < 8) {
+                    return kShortPassError;
+                  } else {
+                    return null;
+                  }
+                },
+                onSaved: (value) {
+                  user['password'] = value!;
+                },
+                onFieldSubmitted: (value) {
+                  _saveForm();
+
+                  _auth.creatNewAccount(user['email']!, user['password']!);
+                },
+                suffixIcon: isObscuree
+                    ? GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            isObscuree = !isObscuree;
+                          });
+                        },
+                        child: Image.asset(
+                          iconName('eye-crossed'),
+                          scale: 28,
+                          color: Colors.white38,
+                        ))
+                    : IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isObscuree = !isObscuree;
+                          });
+                        },
+                        icon: const Icon(Icons.remove_red_eye))),
             setVerticalSpace(2),
-            _registerBotton(),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: CustomTextButton(
+                onPressed: () async {
+                  final isvalid = _form.currentState!.validate();
+                  if (!isvalid) {
+                    return;
+                  } else {
+                    _form.currentState?.save();
+                    try {
+                      await _auth.creatNewAccount(
+                          user['email']!, user['password']!);
+                      await userViewModel.createUserInfo(
+                        user['email']!,
+                        user['name']!,
+                      );
+                      NavigatorService.pushFadeTransition(
+                        context,
+                        const HomeScreen(),
+                      );
+                    } catch (e) {
+                      log('The error when create new user is:$e');
+                    }
+                  }
+                },
+                text: "Register",
+                textColor: kPrimaryColor,
+                color: Colors.white,
+                width: setWidth(32),
+                height: setHeight(5),
+              ),
+            ),
             const Spacer(flex: 3)
           ],
         ),
       ),
-    );
-  }
-
-  Align _registerBotton() {
-    final userViewModel = Provider.of<UserViewModel>(context, listen: false);
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: CustomTextButton(
-        onPressed: () async {
-          final isvalid = _form.currentState!.validate();
-          if (!isvalid) {
-            return;
-          } else {
-            _form.currentState?.save();
-            try {
-              await _auth.creatNewAccount(user['email']!, user['password']!);
-              await userViewModel.createUserInfo(
-                user['email']!,
-                user['name']!,
-              );
-              NavigatorService.pushFadeTransition(context, const HomeScreen(),);
-          
-            } catch (e) {
-              log('The error when create new user is:$e');
-            }
-          }
-        },
-        text: "Register",
-        textColor: kPrimaryColor,
-        color: Colors.white,
-        width: setWidth(32),
-        height: setHeight(5),
-      ),
-    );
-  }
-
-  AuthTextFormField _passwordField() {
-    return AuthTextFormField(
-        focusNode: passwordFoucasNode,
-        hintText: "Password",
-        obscureText: isObscuree,
-        validator: (value) {
-          if (value!.isEmpty) {
-            return kPassNullError;
-          } else if (value.length < 8) {
-            return kShortPassError;
-          } else {
-            return null;
-          }
-        },
-        onSaved: (value) {
-          user['password'] = value!;
-        },
-        onFieldSubmitted: (value) {
-          _saveForm();
-
-          _auth.creatNewAccount(user['email']!, user['password']!);
-        },
-        suffixIcon: isObscuree
-            ? GestureDetector(
-                onTap: () {
-                  setState(() {
-                    isObscuree = !isObscuree;
-                  });
-                },
-                child: Image.asset(
-                  iconName('eye-crossed'),
-                  scale: 28,
-                  color: Colors.white38,
-                ))
-            : IconButton(
-                onPressed: () {
-                  setState(() {
-                    isObscuree = !isObscuree;
-                  });
-                },
-                icon: const Icon(Icons.remove_red_eye)));
-  }
-
-  AuthTextFormField _emailField(BuildContext context) {
-    return AuthTextFormField(
-      onSaved: (value) {
-        user['email'] = value!;
-      },
-      focusNode: emailFoucasNode,
-      hintText: 'email@example.com',
-      onFieldSubmitted: (value) {
-        FocusScope.of(context).requestFocus(passwordFoucasNode);
-      },
-      validator: (value) {
-        if (value!.isEmpty) {
-          return kEmailNullError;
-        } else if (!emailValidatorRegExp.hasMatch(value)) {
-          return kInvalidEmailError;
-        } else {
-          return null;
-        }
-      },
-    );
-  }
-
-  AuthTextFormField _userNameField(BuildContext context) {
-    return AuthTextFormField(
-      hintText: "user_name",
-      onSaved: (value) {
-        user['name'] = value!;
-      },
-      onFieldSubmitted: (value) {
-        FocusScope.of(context).requestFocus(emailFoucasNode);
-      },
     );
   }
 }

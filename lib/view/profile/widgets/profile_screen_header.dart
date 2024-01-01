@@ -5,7 +5,13 @@
 
 import '../../../core/widgets/custom_text.dart';
 
-Row profileScreenHeader() {
+class PRofileScreenHeader extends StatelessWidget {
+  const PRofileScreenHeader({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -34,4 +40,5 @@ Row profileScreenHeader() {
       ],
     );
   }
+}
 

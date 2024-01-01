@@ -55,106 +55,86 @@ class _LoginScreenState extends State<LoginScreen>
         builder: (context, child) => SingleChildScrollView(
           child: Stack(
             children: [
-              _login(screenHeight, screenWidth),
-              _signIn(screenWidth, screenHeight),
+              AnimatedPositioned(
+                right: null,
+                duration: Duration(milliseconds: 400),
+                child: InkWell(
+                  onTap: isSign ? updateScreen : () {},
+                  child: Container(
+                    height: screenHeight,
+                    width: screenWidth,
+                    color: kPrimaryyDarkColor,
+                    child: LoginForm(),
+                  ),
+                ),
+              ),
+              AnimatedPositioned(
+                duration: Duration(milliseconds: 400),
+                width: screenWidth * 0.84,
+                height: screenHeight,
+                left: isSign ? screenWidth * 0.16 : screenWidth * 0.84,
+                child: InkWell(
+                  onTap: isSign ? () {} : updateScreen,
+                  child: Container(
+                    color: kPrimaryColor,
+                    child: SignUpForm(),
+                  ),
+                ),
+              ),
               setVerticalSpace(5),
-              _socalBottons(screenWidth),
-              _titleLogin(screenWidth, screenHeight),
-              _titleSignUp(screenWidth, screenHeight),
+              AnimatedPositioned(
+                duration: Duration(milliseconds: 300),
+                left: isSign ? screenWidth * 0.1 : 0,
+                right: isSign ? 0 : screenWidth * 0.12,
+                bottom: screenWidth * 0.3,
+                child: SocialButton(isSignIn: isSign),
+              ),
+              AnimatedPositioned(
+                  duration: Duration(milliseconds: 300),
+                  left: isSign ? -screenWidth * 0.2 : screenWidth * 0.3,
+                  right: isSign ? screenWidth * 0.84 - 84 : 145,
+                  bottom: isSign ? screenHeight * 0.5 : screenWidth * 0.7,
+                  child: AnimatedDefaultTextStyle(
+                    duration: Duration(milliseconds: 300),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: isSign ? 23 : 32,
+                      color: !isSign ? Colors.white38 : Colors.white,
+                    ),
+                    child: Transform.rotate(
+                      //    alignment: Alignment.topRight,
+                      angle: _rotate.value,
+                      child: InkWell(
+                        onTap: () {},
+                        child: Text(
+                          'Log In ',
+                        ),
+                      ),
+                    ),
+                  )),
+              AnimatedPositioned(
+                  duration: Duration(milliseconds: 300),
+                  left: isSign ? screenWidth * 0.1 : screenWidth * 0.81,
+                  right: isSign ? screenWidth * 0.01 : null,
+                  bottom: isSign ? screenHeight * 0.3 : screenHeight * 0.5,
+                  child: AnimatedDefaultTextStyle(
+                    duration: Duration(milliseconds: 300),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: isSign ? 32 : 23,
+                      color: isSign ? Colors.white38 : Colors.white,
+                    ),
+                    child: Transform.rotate(
+                      angle: _rotate.value + pi / 2,
+                      child: Text(
+                        'Sign Up  ',
+                      ),
+                    ),
+                  )),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  AnimatedPositioned _titleSignUp(double screenWidth, double screenHeight) {
-    return AnimatedPositioned(
-        duration: Duration(milliseconds: 300),
-        left: isSign ? screenWidth * 0.1 : screenWidth * 0.81,
-        right: isSign ? screenWidth * 0.01 : null,
-        bottom: isSign ? screenHeight * 0.3 : screenHeight * 0.5,
-        child: AnimatedDefaultTextStyle(
-          duration: Duration(milliseconds: 300),
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: isSign ? 32 : 23,
-            color: isSign ? Colors.white38 : Colors.white,
-          ),
-          child: Transform.rotate(
-            angle: _rotate.value + pi / 2,
-            child: Text(
-              'Sign Up  ',
-            ),
-          ),
-        ));
-  }
-
-  AnimatedPositioned _titleLogin(double screenWidth, double screenHeight) {
-    return AnimatedPositioned(
-        duration: Duration(milliseconds: 300),
-        left: isSign ? -screenWidth * 0.2 : screenWidth * 0.3,
-        right: isSign ? screenWidth * 0.84 - 84 : 145,
-        bottom: isSign ? screenHeight * 0.5 : screenWidth * 0.7,
-        child: AnimatedDefaultTextStyle(
-          duration: Duration(milliseconds: 300),
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: isSign ? 23 : 32,
-            color: !isSign ? Colors.white38 : Colors.white,
-          ),
-          child: Transform.rotate(
-            //    alignment: Alignment.topRight,
-            angle: _rotate.value,
-            child: InkWell(
-              onTap: () {},
-              child: Text(
-                'Log In ',
-              ),
-            ),
-          ),
-        ));
-  }
-
-  AnimatedPositioned _socalBottons(double screenWidth) {
-    return AnimatedPositioned(
-      duration: Duration(milliseconds: 300),
-      left: isSign ? screenWidth * 0.1 : 0,
-      right: isSign ? 0 : screenWidth * 0.12,
-      bottom: screenWidth * 0.3,
-      child: SocialButton(isSignIn: isSign),
-    );
-  }
-
-  AnimatedPositioned _signIn(double screenWidth, double screenHeight) {
-    return AnimatedPositioned(
-      duration: Duration(milliseconds: 400),
-      width: screenWidth * 0.84,
-      height: screenHeight,
-      left: isSign ? screenWidth * 0.16 : screenWidth * 0.84,
-      child: InkWell(
-        onTap: isSign ? () {} : updateScreen,
-        child: Container(
-          color: kPrimaryColor,
-          child: SignUpForm(),
-        ),
-      ),
-    );
-  }
-
-  AnimatedPositioned _login(double screenHeight, double screenWidth) {
-    return AnimatedPositioned(
-      right: null,
-      duration: Duration(milliseconds: 400),
-      child: InkWell(
-        onTap: isSign ? updateScreen : () {},
-        child: Container(
-          height: screenHeight,
-          width: screenWidth,
-          color: kPrimaryyDarkColor,
-          child: LoginForm(),
         ),
       ),
     );

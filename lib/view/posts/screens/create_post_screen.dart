@@ -42,6 +42,8 @@ class _CreatePostScreenState extends State<CreatePostScreen>
 
   @override
   Widget build(BuildContext context) {
+    final userViewModel = Provider.of<UserViewModel>(context, listen: false);
+
     super.build(context);
     return GestureDetector(
       onTap: () {
@@ -52,7 +54,41 @@ class _CreatePostScreenState extends State<CreatePostScreen>
         }
       },
       child: Scaffold(
-        appBar: _appbar(context),
+        appBar: AppBar(
+          leadingWidth: double.infinity,
+          leading: Row(
+            children: [
+              IconButton(
+                  onPressed: () {
+                    if (_isDirty) {
+                      ShowDialog.showMyDialog(
+                        context,
+                        title: 'Save changes?',
+                        discription:
+                            'Do you want to cancel the changes you made',
+                        choiceTrue: 'Return',
+                        choiceFalse: 'Discard',
+                        onChoiceTrue: () {
+                          return;
+                        },
+                        onChoiceFalse: () {
+                          Navigator.pop(context);
+                        },
+                        height: 30.0,
+                      );
+                    } else {
+                      Navigator.pop(context);
+                    }
+                  },
+                  icon: const Icon(Icons.arrow_back)),
+              CustomText(
+                text: 'Create Post',
+                fontSize: 15,
+                color: Colors.white,
+              ),
+            ],
+          ),
+        ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
@@ -64,16 +100,122 @@ class _CreatePostScreenState extends State<CreatePostScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Spacer(),
-                    _buildUserDetails(context),
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(
+                              userViewModel.currentUser.imageProfileUrl),
+                          radius: 19,
+                        ),
+                        const SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(userViewModel.currentUser.userName,
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            setVerticalSpace(0.5),
+                          ],
+                        ),
+                      ],
+                    ),
                     setVerticalSpace(2),
-                    _buildPostDescription(),
+                    TextFormField(
+                      maxLines: mediaFile == null ? 5 : 1,
+                      onChanged: (value) {
+                        _discription = value;
+                        setState(() {
+                          _isDirty = true;
+                        });
+                      },
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "please enter something";
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                        errorStyle: TextStyle(color: Colors.red),
+                        border: OutlineInputBorder(),
+                        hintText: "What's on your mind?",
+                      ),
+                    ),
                     const SizedBox(height: 16.0),
-                    if (mediaFile != null) _buildMediaPreview(),
+                    if (mediaFile != null) Container(
+      padding: EdgeInsets.all(5),
+      height: setHeight(30),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border.all(width: 2, color: Colors.white),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Image.file(mediaFile!),
+    ),
                     setVerticalSpace(2),
-                    _buildPhotoOption(context),
+                    InkWell(
+                      onTap: () {
+                        ShowDialog.showMyDialog(
+                          context,
+                          icon: FontAwesomeIcons.image,
+                          title: '',
+                          discription: '',
+                          choiceTrue: 'Gallery',
+                          choiceFalse: 'Camera',
+                          onChoiceTrue: () async {
+                            mediaFile =
+                                await ImagePickerHelper.pickImageFromGallery();
+                            setState(() {});
+                          },
+                          onChoiceFalse: () async {
+                            mediaFile =
+                                await ImagePickerHelper.pickImageFromCamera();
+                            setState(() {});
+                          },
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          const Icon(FontAwesomeIcons.image),
+                          setHorizentalSpace(2),
+                          CustomText(text: 'Photos'),
+                        ],
+                      ),
+                    ),
                     setVerticalSpace(1),
                     const Spacer(),
-                    _buildPostButton(context),
+                    
+     SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () async {
+          if (_formKey.currentState!.validate()) {
+            if (mediaFile == null) {
+              ShowDialog.showMyDialog(context,
+                  title: 'Error!',
+                  discription: 'Please Enter a picture to create new post',
+                  choiceTrue: 'Got it',
+                  onChoiceTrue: () {},
+                  height: 25);
+            } else {
+               final timeLinePostsViewModel =
+        Provider.of<TimeLinePostsViewModel>(context, listen: false);
+              await timeLinePostsViewModel.createPost(
+                  ownerProfileImage: userViewModel.currentUser.imageProfileUrl,
+                  ownerName: userViewModel.currentUser.userName,
+                  postDescription: _discription,
+                  imageFile: mediaFile);
+
+              Navigator.pop(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HomeScreen(),
+                  ));
+            }
+          }
+        },
+        child: const Text("Post"),
+      ),
+    )
+  ,
                     const Spacer(
                       flex: 3,
                     ),
@@ -87,167 +229,5 @@ class _CreatePostScreenState extends State<CreatePostScreen>
     );
   }
 
-  Container _buildMediaPreview() {
-    return Container(
-      padding: EdgeInsets.all(5),
-      height: setHeight(30),
-      width: double.infinity,
-      decoration: BoxDecoration(
-        border: Border.all(width: 2, color: Colors.white),
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Image.file(mediaFile!),
-    );
-  }
 
-  SizedBox _buildPostButton(context) {
-    final userViewModel = Provider.of<UserViewModel>(context, listen: false);
-    final timeLinePostsViewModel =
-        Provider.of<TimeLinePostsViewModel>(context, listen: false);
-
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () async {
-          if (_formKey.currentState!.validate()) {
-            if (mediaFile == null) {
-              ShowDialog.showMyDialog(context,
-                  title: 'Error!',
-                  discription: 'Please Enter a picture to create new post',
-                  choiceTrue: 'Got it',
-                  onChoiceTrue: () {},
-                  height: 25);
-            } else {
-              await timeLinePostsViewModel.createPost(
-                  ownerProfileImage: userViewModel.currentUser.imageProfileUrl,
-                  ownerName: userViewModel.currentUser.userName,
-                  postDescription: _discription,
-                  imageFile: mediaFile);
-                  
-              Navigator.pop(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const HomeScreen(),
-                  ));
-            }
-          }
-        },
-        child: const Text("Post"),
-      ),
-    );
-  }
-
-  InkWell _buildPhotoOption(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        ShowDialog.showMyDialog(
-          context,
-          icon: FontAwesomeIcons.image,
-          title: '',
-          discription: '',
-          choiceTrue: 'Gallery',
-          choiceFalse: 'Camera',
-          onChoiceTrue: () async {
-            mediaFile = await ImagePickerHelper.pickImageFromGallery();
-            setState(() {});
-          },
-          onChoiceFalse: () async {
-            mediaFile = await ImagePickerHelper.pickImageFromCamera();
-            setState(() {});
-          },
-          
-        );
-      },
-      child: Row(
-        children: [
-          const Icon(FontAwesomeIcons.image),
-          setHorizentalSpace(2),
-          CustomText(text: 'Photos'),
-        ],
-      ),
-    );
-  }
-
-  TextFormField _buildPostDescription() {
-    return TextFormField(
-      maxLines: mediaFile == null ? 5 : 1,
-      onChanged: (value) {
-        _discription = value;
-        setState(() {
-          _isDirty = true;
-        });
-      },
-      validator: (value) {
-        if (value!.isEmpty) {
-          return "please enter something";
-        }
-        return null;
-      },
-      decoration: const InputDecoration(
-        errorStyle: TextStyle(color: Colors.red),
-        border: OutlineInputBorder(),
-        hintText: "What's on your mind?",
-      ),
-    );
-  }
-
-Row _buildUserDetails(BuildContext context) {
-    final userViewModel = Provider.of<UserViewModel>(context, listen: false);
-    return Row(
-      children: [
-        CircleAvatar(
-          backgroundImage: NetworkImage(
-            userViewModel.currentUser.imageProfileUrl
-          ),
-          radius: 19,
-        ),
-        const SizedBox(width: 10),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(userViewModel.currentUser.userName,
-                style: TextStyle(fontWeight: FontWeight.bold)),
-            setVerticalSpace(0.5),
-          ],
-        ),
-      ],
-    );
-  }
-
-  AppBar _appbar(BuildContext context) {
-    return AppBar(
-      leadingWidth: double.infinity,
-      leading: Row(
-        children: [
-          IconButton(
-              onPressed: () {
-                if (_isDirty) {
-                  ShowDialog.showMyDialog(
-                    context,
-                    title: 'Save changes?',
-                    discription: 'Do you want to cancel the changes you made',
-                    choiceTrue: 'Return',
-                    choiceFalse: 'Discard',
-                    onChoiceTrue: () {
-                      return;
-                    },
-                    onChoiceFalse: () {
-                      Navigator.pop(context);
-                    },
-                    height: 30.0,
-                  );
-                } else {
-                  Navigator.pop(context);
-                }
-              },
-              icon: const Icon(Icons.arrow_back)),
-          CustomText(
-            text: 'Create Post',
-            fontSize: 15,
-            color: Colors.white,
-          ),
-        ],
-      ),
-    );
-  }
 }

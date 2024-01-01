@@ -44,15 +44,8 @@ class _PostsScreenState extends State<PostsScreen> {
     final timeLinePostsViewModel = TimeLinePostsViewModel.provider(context,listen: true);
     
     return Consumer<UserViewModel>(
-        builder: (context, userViewModel, child) => _buildPostsScreenBody(
-            context, timeLinePostsViewModel, userViewModel));
-  }
-
-  Widget _buildPostsScreenBody(
-      BuildContext context,
-      TimeLinePostsViewModel timeLinePostsViewModel,
-      UserViewModel userViewModel) {
-    return RefreshIndicator(
+        builder: (context, userViewModel, child) => 
+     RefreshIndicator(
       onRefresh: () async {
           setState(()async {
             await Provider.of<TimeLinePostsViewModel>(context, listen: false)
@@ -61,9 +54,30 @@ class _PostsScreenState extends State<PostsScreen> {
       },
       child: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-          child: _buildPostsItems(timeLinePostsViewModel,
-              timeLinePostsViewModel.timeLinePosts!, userViewModel)),
-    );
+          child: 
+     AnimationLimiter(
+      child: ListView.builder(
+        controller: _scrollController,
+        itemCount:timeLinePostsViewModel.posts.length,
+        itemBuilder: (BuildContext context, int index) {
+          return AnimationConfiguration.staggeredList(
+            position: index,
+            duration: const Duration(milliseconds: 375),
+            child: SlideAnimation(
+              verticalOffset: 50.0,
+              child: FadeInAnimation(
+                child: _buildPostItem(context, timeLinePostsViewModel.posts, index,
+                    timeLinePostsViewModel, userViewModel),
+              ),
+            ),
+          );
+        },
+      ),
+    )
+  ),
+    )
+  
+  );
   }
 
   void _onScroll() async {
@@ -77,28 +91,9 @@ class _PostsScreenState extends State<PostsScreen> {
     }
   }
 
-  Widget _buildPostsItems(TimeLinePostsViewModel timeLinePostsViewModel,
-      List<Post> posts, UserViewModel userViewModel) {
-    return AnimationLimiter(
-      child: ListView.builder(
-        controller: _scrollController,
-        itemCount: posts.length,
-        itemBuilder: (BuildContext context, int index) {
-          return AnimationConfiguration.staggeredList(
-            position: index,
-            duration: const Duration(milliseconds: 375),
-            child: SlideAnimation(
-              verticalOffset: 50.0,
-              child: FadeInAnimation(
-                child: _buildPostItem(context, posts, index,
-                    timeLinePostsViewModel, userViewModel),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
+ 
+
+
 
   GestureDetector _buildPostItem(
       BuildContext context,
